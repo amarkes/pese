@@ -8,6 +8,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.2.0] - 2026-03-18 20:32
+- add page add weight
+
 ## [0.1.0] - 2026-03-18 20:08
 - settings and darkmod 
 

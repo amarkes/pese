@@ -1,6 +1,6 @@
 {
   "name": "pese",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -8,12 +8,14 @@
     "ios2": "react-native run-ios --simulator='iPhone15'",
     "clear": "react-native start --reset-cache",
     "lint": "eslint .",
+    "reinstall": "rm -rf node_modules && rm package-lock.json && npm install && npx pod-install",
     "release": "node scripts/release.mjs",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^3.0.1",
+    "@react-native-community/datetimepicker": "^9.1.0",
     "@react-native/new-app-screen": "0.84.1",
     "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/native": "^7.1.33",

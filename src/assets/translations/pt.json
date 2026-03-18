@@ -4,7 +4,10 @@
     "glucose": "Glicose",
     "water": "Água",
     "register": "Registrar",
-    "viewDetails": "Ver detalhes"
+    "viewDetails": "Ver detalhes",
+    "today": "Hoje",
+    "cancel": "Cancelar",
+    "done": "OK"
   },
   "dashboard": {
     "greeting": "Bom dia,",
@@ -38,5 +41,15 @@
     "history": "Histórico",
     "profile": "Perfil",
     "settings": "Ajustes"
+  },
+  "weight": {
+    "registerTitle": "Registrar Peso",
+    "todayWeight": "O peso de hoje",
+    "saveRecord": "Guardar Registro",
+    "lastRecordDiff": "{{diff}} kg desde o último registro",
+    "date": "Data",
+    "time": "Hora",
+    "selectDate": "Selecionar Data",
+    "selectTime": "Selecionar Hora"
   }
 }

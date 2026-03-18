@@ -65,7 +65,14 @@ async function main() {
   }
 
   // 2. Lint & Testes
-  run("./node_modules/.bin/eslint .");
+  console.log("🔍 Rodando lint...");
+  try {
+    run("./node_modules/.bin/eslint .", { exitOnError: false });
+    console.log("✅ Lint realizado com sucesso!\n");
+  } catch (error) {
+    console.error("\n\x1b[31m❌ Falha no lint. Corrija os erros acima antes de continuar.\x1b[0m");
+    process.exit(1);
+  }
   
   // 3. Carregar versão atual
   const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
@@ -146,11 +153,11 @@ async function main() {
     const typeMapping = { patch: "fix", minor: "feat", major: "feat!" };
     const commitType = typeMapping[answers.releaseType] || "chore";
 
-    run("git add .");
-    run(`git commit -m "${commitType}(v${nextVersion}): ${answers.notes}"`);
-    run(`git tag v${nextVersion}`);
-    run("git push origin HEAD");
-    run("git push origin --tags");
+    run("git add .", { exitOnError: false });
+    run(`git commit -m "${commitType}(v${nextVersion}): ${answers.notes}"`, { exitOnError: false });
+    run(`git tag v${nextVersion}`, { exitOnError: false });
+    run("git push origin HEAD", { exitOnError: false });
+    run("git push origin --tags", { exitOnError: false });
     
     console.log(`\n\x1b[32m🎉 Release v${nextVersion} publicada com sucesso!\x1b[0m\n`);
   } catch (err) {

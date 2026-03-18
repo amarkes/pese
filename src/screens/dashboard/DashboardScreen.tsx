@@ -31,6 +31,32 @@ const DashboardScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Quick Actions */}
+        <Typography variant="h2" className="text-2xl font-inter-bold mb-6 mt-2">{t('dashboard.quickActions')}</Typography>
+        <View className="flex-row mb-12">
+          <QuickAction 
+            icon={Weight} 
+            label={`${t('common.register')} ${t('common.weight')}`} 
+            color="#007AFF" 
+            bgColor="bg-blue-50" 
+            onPress={() => console.log('Registrar Peso')} 
+          />
+          <QuickAction 
+            icon={Activity} 
+            label={`${t('common.register')} ${t('common.glucose')}`} 
+            color="#F97316" 
+            bgColor="bg-orange-50" 
+            onPress={() => console.log('Registrar Glicose')} 
+          />
+          <QuickAction 
+            icon={Droplets} 
+            label={`${t('common.register')} ${t('common.water')}`} 
+            color="#3B82F6" 
+            bgColor="bg-blue-50" 
+            onPress={() => console.log('Registrar Água')} 
+          />
+        </View>
+
         {/* Large weight card */}
         <Card className="mb-6 p-6">
           <View className="flex-row items-center justify-between mb-2">
@@ -128,32 +154,6 @@ const DashboardScreen: React.FC = () => {
             style={styles.chart}
           />
         </Card>
-
-        {/* Quick Actions */}
-        <Typography variant="h2" className="text-2xl font-inter-bold mb-6 mt-2">{t('dashboard.quickActions')}</Typography>
-        <View className="flex-row mb-12">
-          <QuickAction 
-            icon={Weight} 
-            label={`${t('common.register')} ${t('common.weight')}`} 
-            color="#007AFF" 
-            bgColor="bg-blue-50" 
-            onPress={() => console.log('Registrar Peso')} 
-          />
-          <QuickAction 
-            icon={Activity} 
-            label={`${t('common.register')} ${t('common.glucose')}`} 
-            color="#F97316" 
-            bgColor="bg-orange-50" 
-            onPress={() => console.log('Registrar Glicose')} 
-          />
-          <QuickAction 
-            icon={Droplets} 
-            label={`${t('common.register')} ${t('common.water')}`} 
-            color="#3B82F6" 
-            bgColor="bg-blue-50" 
-            onPress={() => console.log('Registrar Água')} 
-          />
-        </View>
 
         {/* Extra space for scrolling */}
         <View className="h-20" />

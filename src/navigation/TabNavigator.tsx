@@ -8,6 +8,8 @@ import { useColorScheme } from 'nativewind';
 import DashboardScreen from '@/screens/dashboard/DashboardScreen';
 import { HistoryScreen } from '@/screens/history/HistoryScreen';
 import SettingsScreen from '@/screens/settings';
+import { RegisterWeightScreen } from '@/screens/weight/RegisterWeightScreen';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -30,9 +32,12 @@ const HistoryIcon = ({ color, size }: any) => <History size={size} color={color}
 const MetasIcon = ({ color, size }: any) => <Activity size={size} color={color} />; // Using Activity for now as requested
 const SettingsIcon = ({ color, size }: any) => <Settings size={size} color={color} />;
 
-const AddButton = (props: any) => (
-  <CustomTabButton {...props} onPress={() => console.log('Novo Registro')} />
-);
+const AddButton = (props: any) => {
+  const { onPress } = props;
+  return (
+    <CustomTabButton {...props} onPress={onPress} />
+  );
+};
 
 export const TabNavigator = () => {
   const { t } = useTranslation();
@@ -80,8 +85,9 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="Add"
-        component={DashboardScreen}
+        component={RegisterWeightScreen}
         options={{
+          tabBarLabel: '',
           tabBarButton: AddButton,
         }}
       />

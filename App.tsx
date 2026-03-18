@@ -6,7 +6,8 @@ import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { TabNavigator } from '@/navigation/TabNavigator';
+import { MainStackNavigator } from '@/navigation/MainStackNavigator';
+
 
 export default function App() {
   const { colorScheme } = useColorScheme();
@@ -19,7 +20,7 @@ export default function App() {
         backgroundColor={isDarkMode ? '#1C1C1E' : '#F2F2F7'} 
       />
       <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
-        <TabNavigator />
+        <MainStackNavigator />
       </NavigationContainer>
     </SafeAreaProvider>
   );

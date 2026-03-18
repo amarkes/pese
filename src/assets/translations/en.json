@@ -4,7 +4,10 @@
     "glucose": "Glucose",
     "water": "Water",
     "register": "Register",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "today": "Today",
+    "cancel": "Cancel",
+    "done": "Done"
   },
   "dashboard": {
     "greeting": "Good morning,",
@@ -38,5 +41,15 @@
     "history": "History",
     "profile": "Profile",
     "settings": "Settings"
+  },
+  "weight": {
+    "registerTitle": "Register Weight",
+    "todayWeight": "Today's weight",
+    "saveRecord": "Save Record",
+    "lastRecordDiff": "{{diff}} kg since last record",
+    "date": "Date",
+    "time": "Time",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time"
   }
 }
