@@ -1,0 +1,40 @@
+{
+  "common": {
+    "weight": "Peso",
+    "glucose": "Glicose",
+    "water": "Água",
+    "register": "Registrar",
+    "viewDetails": "Ver detalhes"
+  },
+  "dashboard": {
+    "greeting": "Bom dia,",
+    "todaySummary": "Resumo de Hoje",
+    "lastWeight": "Último Peso",
+    "targetRange": "Alvo: {{min}}-{{max}}",
+    "trend7days": "Tendência (7 Dias)",
+    "quickActions": "Ações Rápidas",
+    "days": ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"]
+  },
+  "settings": {
+    "title": "Configurações",
+    "personalGoals": "METAS PESSOAIS",
+    "weightGoal": "Meta de Peso",
+    "minGlucose": "Glicose Mín",
+    "maxGlucose": "Glicose Máx",
+    "dailyWaterGoal": "Meta de Água Diária",
+    "preferences": "PREFERÊNCIAS",
+    "dailyNotifications": "Notificações Diárias",
+    "reminders": "Lembretes para registrar peso e água",
+    "darkMode": "Modo Escuro",
+    "appearance": "Alterar aparência do aplicativo",
+    "units": "Unidades de Medida",
+    "unitsSubtitle": "Quilogramas (kg), Mililitros (ml)",
+    "save": "Salvar Alterações"
+  },
+  "tabs": {
+    "home": "Início",
+    "metas": "Metas",
+    "history": "Histórico",
+    "settings": "Ajustes"
+  }
+}
