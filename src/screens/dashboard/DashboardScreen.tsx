@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, Dimensions } from 'react-native';
+import { ScrollView, View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Weight, Droplets, Activity, Zap } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -72,7 +72,7 @@ const DashboardScreen: React.FC = () => {
                 </View>
                  {/* Progress bar */}
                 <View className="w-full h-2.5 bg-slate-100 rounded-full mt-3 overflow-hidden">
-                  <View className="h-full bg-blue-500 rounded-full" style={{ width: '48%' }} />
+                  <View className="h-full bg-blue-500 rounded-full w-[48%]" />
                 </View>
               </View>
             </Card>
@@ -116,7 +116,7 @@ const DashboardScreen: React.FC = () => {
               style: { borderRadius: 16 }
             }}
             bezier
-            style={{ marginVertical: 8, marginLeft: -20 }}
+            style={styles.chart}
           />
         </Card>
 
@@ -153,5 +153,12 @@ const DashboardScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  chart: {
+    marginVertical: 8,
+    marginLeft: -20,
+  },
+});
 
 export default DashboardScreen;

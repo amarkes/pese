@@ -3,4 +3,5 @@ android/
 ios/
 vendor/
 .bundle/
+scripts/
 *.js.map

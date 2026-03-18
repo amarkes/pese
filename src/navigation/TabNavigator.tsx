@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, TouchableOpacity, Platform } from 'react-native';
+import { View, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import { LayoutGrid, History, Settings, Plus, Activity } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import DashboardScreen from '@/screens/dashboard/DashboardScreen';
@@ -9,34 +9,13 @@ import SettingsScreen from '@/screens/settings/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
-
 const CustomTabButton = ({ onPress }: any) => (
   <TouchableOpacity
-    style={{
-      top: -20,
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...Platform.select({
-        ios: {
-          shadowColor: '#007AFF',
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.25,
-          shadowRadius: 10,
-        },
-        android: {
-          elevation: 5,
-        },
-      }),
-    }}
+    style={styles.customTabButton}
     onPress={onPress}
   >
     <View
-      style={{
-        width: 64,
-        height: 64,
-        borderRadius: 32,
-        backgroundColor: '#007AFF',
-      }}
+      style={styles.addButtonInner}
       className="items-center justify-center"
     >
       <Plus size={32} color="white" strokeWidth={3} />
@@ -119,3 +98,28 @@ export const TabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  customTabButton: {
+    top: -20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#007AFF',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  addButtonInner: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#007AFF',
+  },
+});
