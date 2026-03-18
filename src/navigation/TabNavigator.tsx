@@ -3,9 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import { LayoutGrid, History, Settings, Plus, Activity } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
+
 import DashboardScreen from '@/screens/dashboard/DashboardScreen';
 import { HistoryScreen } from '@/screens/history/HistoryScreen';
-import SettingsScreen from '@/screens/settings/SettingsScreen';
+import SettingsScreen from '@/screens/settings';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,21 +36,25 @@ const AddButton = (props: any) => (
 
 export const TabNavigator = () => {
   const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   return (
     <Tab.Navigator
       screenOptions={{
+
         headerShown: false,
         tabBarStyle: {
           height: 90,
           paddingBottom: Platform.OS === 'ios' ? 30 : 10,
           paddingTop: 10,
           borderTopWidth: 1,
-          borderTopColor: '#F2F2F7',
-          backgroundColor: '#FFFFFF',
+          borderTopColor: isDarkMode ? '#1E293B' : '#F2F2F7',
+          backgroundColor: isDarkMode ? '#1C1C1E' : '#FFFFFF',
         },
         tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#6C6C70',
+        tabBarInactiveTintColor: isDarkMode ? '#8E8E93' : '#6C6C70',
+
         tabBarLabelStyle: {
           fontSize: 10,
           fontFamily: 'Inter_18pt-Bold',

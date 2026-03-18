@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <Container 
-      className={`bg-white rounded-3xl p-4 shadow-sm ${className}`} 
+      className={`bg-white dark:bg-slate-900 rounded-3xl p-4 shadow-sm border border-slate-50/5 dark:border-slate-800 ${className}`} 
       {...containerProps}
       {...props}
     >

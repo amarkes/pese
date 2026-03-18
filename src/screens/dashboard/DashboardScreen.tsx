@@ -3,6 +3,8 @@ import { ScrollView, View, TouchableOpacity, Dimensions, StyleSheet } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Weight, Droplets, Activity, Zap } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
+
 import { Typography } from '@/components/atoms/Typography';
 import { Card } from '@/components/molecules/Card';
 import { IconBox } from '@/components/atoms/IconBox';
@@ -13,9 +15,12 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const DashboardScreen: React.FC = () => {
   const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-background dark:bg-background-dark" edges={['top']}>
+
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-5 pt-4">
         
         {/* Summary title */}
@@ -34,15 +39,17 @@ const DashboardScreen: React.FC = () => {
               <View>
                 <Typography variant="label" className="text-xs uppercase font-inter-bold">{t('dashboard.lastWeight')}</Typography>
                 <View className="flex-row items-baseline">
-                  <Typography variant="h1" className="text-4xl font-inter-bold mr-2 text-text">75.5</Typography>
-                  <Typography variant="h3" className="text-2xl font-inter-semibold text-text-secondary">kg</Typography>
+                  <Typography variant="h1" className="text-4xl font-inter-bold mr-2 text-text dark:text-text-dark">75.5</Typography>
+                  <Typography variant="h3" className="text-2xl font-inter-semibold text-text-secondary dark:text-text-secondary-dark">kg</Typography>
                 </View>
+
               </View>
             </View>
-            <View className="bg-emerald-50 px-3 py-1.5 rounded-2xl flex-row items-center">
+            <View className="bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 rounded-2xl flex-row items-center">
               <Zap size={14} color="#10B981" />
               <Typography variant="caption" className="text-emerald-500 font-inter-bold ml-1">-0.2</Typography>
             </View>
+
           </View>
         </Card>
 
@@ -68,12 +75,13 @@ const DashboardScreen: React.FC = () => {
                 <Typography variant="label" className="mb-1">{t('common.water')}</Typography>
                 <View className="flex-row items-baseline">
                   <Typography variant="h2" className="text-2xl font-inter-bold mr-1">1200</Typography>
-                  <Typography variant="caption" className="text-xs font-inter-medium text-text-secondary">/ 2500 ml</Typography>
+                  <Typography variant="caption" className="text-xs font-inter-medium text-text-secondary dark:text-text-secondary-dark">/ 2500 ml</Typography>
                 </View>
                  {/* Progress bar */}
-                <View className="w-full h-2.5 bg-slate-100 rounded-full mt-3 overflow-hidden">
+                <View className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full mt-3 overflow-hidden">
                   <View className="h-full bg-blue-500 rounded-full w-[48%]" />
                 </View>
+
               </View>
             </Card>
           </View>
@@ -106,15 +114,16 @@ const DashboardScreen: React.FC = () => {
             withVerticalLabels={true}
             withHorizontalLabels={false}
             chartConfig={{
-              backgroundColor: '#fff',
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
+              backgroundColor: isDarkMode ? '#1C1C1E' : '#fff',
+              backgroundGradientFrom: isDarkMode ? '#1C1C1E' : '#fff',
+              backgroundGradientTo: isDarkMode ? '#1C1C1E' : '#fff',
               decimalPlaces: 1,
               color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(108, 108, 112, ${opacity})`,
+              labelColor: (opacity = 1) => isDarkMode ? `rgba(142, 142, 147, ${opacity})` : `rgba(108, 108, 112, ${opacity})`,
               propsForLabels: { fontFamily: 'Inter_18pt-Medium', fontSize: 10 },
               style: { borderRadius: 16 }
             }}
+
             bezier
             style={styles.chart}
           />

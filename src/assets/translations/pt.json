@@ -29,12 +29,14 @@
     "appearance": "Alterar aparência do aplicativo",
     "units": "Unidades de Medida",
     "unitsSubtitle": "Quilogramas (kg), Mililitros (ml)",
+    "profile": "Perfil",
     "save": "Salvar Alterações"
   },
   "tabs": {
     "home": "Início",
     "metas": "Metas",
     "history": "Histórico",
+    "profile": "Perfil",
     "settings": "Ajustes"
   }
 }

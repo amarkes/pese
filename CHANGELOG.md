@@ -7,6 +7,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.1.0] - 2026-03-18 20:08
+- settings and darkmod 
+
 ## [0.0.7] - 2026-03-18 19:51
 - remove vendor for directory
 

@@ -23,10 +23,10 @@ export const QuickAction: React.FC<QuickActionProps> = ({
     <TouchableOpacity 
       onPress={onPress} 
       activeOpacity={0.7}
-      className="bg-white rounded-3xl p-4 items-center justify-center flex-1 mx-1 shadow-sm h-32"
+      className="bg-white dark:bg-slate-900 rounded-3xl p-4 items-center justify-center flex-1 mx-1 shadow-sm border border-slate-50/5 dark:border-slate-800 h-32"
     >
       <IconBox icon={icon} color={color} bgColor={bgColor} size={28} className="mb-3" />
-      <Typography variant="caption" className="font-inter-bold text-center text-text leading-tight px-1">
+      <Typography variant="caption" className="font-inter-bold text-center text-text dark:text-text-dark leading-tight px-1">
         {label}
       </Typography>
     </TouchableOpacity>

@@ -29,12 +29,14 @@
     "appearance": "Change app appearance",
     "units": "Units of Measurement",
     "unitsSubtitle": "Kilograms (kg), Milliliters (ml)",
+    "profile": "Profile",
     "save": "Save Changes"
   },
   "tabs": {
     "home": "Home",
     "metas": "Goals",
     "history": "History",
+    "profile": "Profile",
     "settings": "Settings"
   }
 }
