@@ -5,6 +5,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.0.6] - 2026-03-18 19:45
+- fix hour by ia
+
 ## [0.0.5] - 2026-03-18
 - fix hour in changelog
 

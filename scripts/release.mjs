@@ -115,8 +115,10 @@ async function main() {
   console.log("✅ package.json atualizado.");
 
   // 6. Atualizar CHANGELOG.md
-  const date = new Date().toISOString().split("T")[0];
-  const newEntry = `\n## [${nextVersion}] - ${date}\n- ${answers.notes}\n`;
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const newEntry = `\n## [${nextVersion}] - ${dateStr} ${timeStr}\n- ${answers.notes}\n`;
 
   if (!fs.existsSync(changelogPath)) {
     fs.writeFileSync(
