@@ -51,6 +51,7 @@
   "tabs": {
     "home": "Home",
     "metas": "Goals",
+    "reports": "Reports",
     "history": "History",
     "profile": "Profile",
     "settings": "Settings"
@@ -142,6 +143,32 @@
     "waterAdded": "{{amount}}ml Water",
     "today": "Today",
     "editWater": "Edit Water"
+  },
+  "reports": {
+    "title": "Medical Report",
+    "periodTitle": "Report Period",
+    "last30days": "Last 30 days",
+    "thisMonth": "This Month",
+    "custom": "Custom",
+    "dataIncluded": "Included Data",
+    "weightLabel": "Weight",
+    "weightSub": "Weigh-in history",
+    "glucoseLabel": "Glucose",
+    "glucoseSub": "Sugar levels",
+    "waterLabel": "Water",
+    "waterSub": "Daily intake",
+    "exportSummaryTitle": "Export Summary",
+    "exportSummaryName": "Monthly Health Report",
+    "records": "{{count}} Records",
+    "summaryTitle": "Report Summary",
+    "weightAvg": "Average Weight",
+    "weightGoal": "Goal: {{goal}} kg",
+    "glucoseAvg": "Average Glucose",
+    "onTarget": "On Target",
+    "waterAvg": "Water Intake",
+    "dailyGoal": "Daily Goal",
+    "exportPdf": "Export PDF",
+    "exportCsv": "Export CSV"
   }
 }
 

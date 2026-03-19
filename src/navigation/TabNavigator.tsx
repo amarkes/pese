@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, TouchableOpacity, Platform, StyleSheet } from 'react-native';
-import { LayoutGrid, History, Settings, Plus, Activity } from 'lucide-react-native';
+import { LayoutGrid, History, Settings, Plus, BarChart2 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 
@@ -9,6 +9,7 @@ import DashboardScreen from '@/screens/dashboard/DashboardScreen';
 import { HistoryScreen } from '@/screens/history';
 import SettingsScreen from '@/screens/settings';
 import { RegisterWeightScreen } from '@/screens/weight';
+import { ReportsScreen } from '@/screens/reports';
 
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +30,7 @@ const CustomTabButton = ({ onPress }: any) => (
 
 const HomeIcon = ({ color, size }: any) => <LayoutGrid size={size} color={color} />;
 const HistoryIcon = ({ color, size }: any) => <History size={size} color={color} />;
-const MetasIcon = ({ color, size }: any) => <Activity size={size} color={color} />; // Using Activity for now as requested
+const ReportsIcon = ({ color, size }: any) => <BarChart2 size={size} color={color} />;
 const SettingsIcon = ({ color, size }: any) => <Settings size={size} color={color} />;
 
 const AddButton = (props: any) => {
@@ -76,11 +77,11 @@ export const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Metas"
-        component={SettingsScreen} // As requested: Metas leads to Settings
+        name="Reports"
+        component={ReportsScreen}
         options={{
-          tabBarLabel: t('tabs.metas'),
-          tabBarIcon: MetasIcon,
+          tabBarLabel: t('tabs.reports', 'Relatórios'),
+          tabBarIcon: ReportsIcon,
         }}
       />
       <Tab.Screen

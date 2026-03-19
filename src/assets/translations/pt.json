@@ -51,6 +51,7 @@
   "tabs": {
     "home": "Início",
     "metas": "Metas",
+    "reports": "Relatórios",
     "history": "Histórico",
     "profile": "Perfil",
     "settings": "Ajustes"
@@ -142,6 +143,32 @@
     "waterAdded": "{{amount}}ml Água",
     "today": "Hoje",
     "editWater": "Editar Água"
+  },
+  "reports": {
+    "title": "Relatório Médico",
+    "periodTitle": "Período do Relatório",
+    "last30days": "Últimos 30 dias",
+    "thisMonth": "Este Mês",
+    "custom": "Personalizado",
+    "dataIncluded": "Dados Incluídos",
+    "weightLabel": "Peso",
+    "weightSub": "Histórico de pesagem",
+    "glucoseLabel": "Glicemia",
+    "glucoseSub": "Níveis de açúcar",
+    "waterLabel": "Água",
+    "waterSub": "Ingestão diária",
+    "exportSummaryTitle": "Resumo da Exportação",
+    "exportSummaryName": "Relatório de Saúde Mensal",
+    "records": "{{count}} Registros",
+    "summaryTitle": "Resumo do Relatório",
+    "weightAvg": "Média de Peso",
+    "weightGoal": "Meta: {{goal}} kg",
+    "glucoseAvg": "Glicemia Média",
+    "onTarget": "No Alvo",
+    "waterAvg": "Ingestão Hídrica",
+    "dailyGoal": "Meta Diária",
+    "exportPdf": "Exportar PDF",
+    "exportCsv": "Exportar CSV"
   }
 }
 
