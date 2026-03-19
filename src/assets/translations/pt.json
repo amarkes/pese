@@ -120,5 +120,19 @@
     "waterLow": "Beba mais água!",
     "dailyGoalMet": "Meta batida!",
     "totalDay": "Total do dia"
+  },
+  "water": {
+    "title": "Hidratação",
+    "goal": "Meta: {{goal}}ml",
+    "achieved": "{{percentage}}% ATINGIDO",
+    "quickAdd": "ADIÇÃO RÁPIDA",
+    "manualEntry": "ENTRADA MANUAL",
+    "quantityLabel": "Quantidade...",
+    "recentActivity": "ATIVIDADE RECENTE",
+    "seeAll": "Ver Tudo",
+    "waterAdded": "{{amount}}ml Água",
+    "today": "Hoje",
+    "editWater": "Editar Água"
   }
 }
+

@@ -13,6 +13,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.5.0] - 2026-03-19 18:19
+- water page
+
 ## [0.4.0] - 2026-03-19 18:03
 - glucose page add with storage
 

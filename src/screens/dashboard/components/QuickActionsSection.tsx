@@ -35,7 +35,7 @@ export const QuickActionsSection: React.FC = () => {
           label={`${t('common.register')} ${t('common.water')}`} 
           color="#3B82F6" 
           bgColor="bg-blue-50" 
-          onPress={() => console.log('Registrar Água')} 
+          onPress={() => navigation.navigate('RegisterWater')} 
         />
       </View>
     </>

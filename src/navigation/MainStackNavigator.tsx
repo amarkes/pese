@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TabNavigator } from './TabNavigator';
 import { RegisterWeightScreen } from '@/screens/weight/RegisterWeightScreen';
 import { RegisterGlucoseScreen } from '@/screens/glucose/RegisterGlucoseScreen';
+import { RegisterWaterScreen } from '@/screens/water/RegisterWaterScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,11 @@ export const MainStackNavigator = () => {
       <Stack.Screen 
         name="RegisterGlucose" 
         component={RegisterGlucoseScreen}
+        options={{ animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen 
+        name="RegisterWater" 
+        component={RegisterWaterScreen}
         options={{ animation: 'slide_from_bottom' }}
       />
     </Stack.Navigator>
