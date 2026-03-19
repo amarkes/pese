@@ -20,6 +20,7 @@ export const RegisterWaterScreen: React.FC = () => {
     setManualAmount,
     todayRecords,
     dailyGoal,
+    quickAdds,
     totalConsumed,
     percentage,
     handleAddWater,
@@ -80,6 +81,7 @@ export const RegisterWaterScreen: React.FC = () => {
 
           <QuickAddSection 
             onAdd={handleAddWater}
+            quickAdds={quickAdds}
             isDarkMode={isDarkMode}
             t={t}
           />

@@ -14,6 +14,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.6.0] - 2026-03-19 19:27
+- Refactor glucose, water, and weight registration screens, implement new settings management, and update translations.
+
 ## [0.5.0] - 2026-03-19 18:19
 - water page
 

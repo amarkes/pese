@@ -1,9 +1,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TabNavigator } from './TabNavigator';
-import { RegisterWeightScreen } from '@/screens/weight/RegisterWeightScreen';
-import { RegisterGlucoseScreen } from '@/screens/glucose/RegisterGlucoseScreen';
-import { RegisterWaterScreen } from '@/screens/water/RegisterWaterScreen';
+import { RegisterWeightScreen } from '@/screens/weight';
+import { RegisterGlucoseScreen } from '@/screens/glucose';
+import { RegisterWaterScreen } from '@/screens/water/index';
 
 const Stack = createNativeStackNavigator();
 

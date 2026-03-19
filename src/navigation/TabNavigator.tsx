@@ -8,7 +8,7 @@ import { useColorScheme } from 'nativewind';
 import DashboardScreen from '@/screens/dashboard/DashboardScreen';
 import { HistoryScreen } from '@/screens/history';
 import SettingsScreen from '@/screens/settings';
-import { RegisterWeightScreen } from '@/screens/weight/RegisterWeightScreen';
+import { RegisterWeightScreen } from '@/screens/weight';
 
 
 const Tab = createBottomTabNavigator();

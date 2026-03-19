@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, TouchableOpacity, Animated } from 'react-native';
+import { View, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import { Droplet, Trash2, Pencil } from 'lucide-react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Typography } from '@/components/atoms/Typography';
@@ -38,7 +38,14 @@ export const RecentActivityCard = ({ record, onDelete, formatTime, isDarkMode, o
 
   return (
     <View className="mb-3">
-      <Swipeable ref={swipeableRef} renderRightActions={renderRightActions} rightThreshold={40} friction={2}>
+      <Swipeable 
+        ref={swipeableRef} 
+        renderRightActions={renderRightActions} 
+        rightThreshold={40} 
+        friction={2}
+        containerStyle={styles.overflowVisible}
+        childrenContainerStyle={styles.overflowVisible}
+      >
         <Card className="flex-row items-center">
           <View className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 items-center justify-center">
             <Droplet size={20} color={isDarkMode ? "#60A5FA" : "#3B82F6"} />
@@ -56,3 +63,9 @@ export const RecentActivityCard = ({ record, onDelete, formatTime, isDarkMode, o
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  overflowVisible: {
+    overflow: 'visible',
+  },
+});

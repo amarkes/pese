@@ -3,7 +3,7 @@ import { TextInput } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { WaterStorage, WaterRecord } from '@/services/WaterStorage';
-import { WeightStorage } from '@/services/WeightStorage';
+import { SettingsStorage } from '@/services/SettingsStorage';
 
 export const useWaterRegistration = () => {
   const { t } = useTranslation();
@@ -13,12 +13,14 @@ export const useWaterRegistration = () => {
   const [manualAmount, setManualAmount] = useState('');
   const [todayRecords, setTodayRecords] = useState<WaterRecord[]>([]);
   const [dailyGoal, setDailyGoal] = useState(2500);
+  const [quickAdds, setQuickAdds] = useState<number[]>([200, 300, 500]);
 
   const loadData = useCallback(async () => {
     try {
-      const weights = await WeightStorage.getRecords();
-      const latestWeight = weights[0]?.weight || 75;
-      setDailyGoal(Math.round(latestWeight * 35));
+      const settings = await SettingsStorage.getSettings();
+      setDailyGoal(parseInt(settings.waterGoal, 10) || 2500);
+      const savedQuickAdds = settings.waterQuickAdds || ['200', '300', '500'];
+      setQuickAdds(savedQuickAdds.map(val => parseInt(val, 10) || 0).filter(val => val > 0));
 
       const today = new Date().toISOString();
       const records = await WaterStorage.getRecordsByDate(today);
@@ -76,6 +78,7 @@ export const useWaterRegistration = () => {
     setManualAmount,
     todayRecords,
     dailyGoal,
+    quickAdds,
     totalConsumed,
     percentage,
     handleAddWater,
