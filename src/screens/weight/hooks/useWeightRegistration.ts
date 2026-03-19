@@ -5,7 +5,7 @@ import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/nativ
 import { WeightStorage, WeightRecord } from '@/services/WeightStorage';
 
 export const useWeightRegistration = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const inputRef = useRef<TextInput>(null);
@@ -55,7 +55,7 @@ export const useWeightRegistration = () => {
       } else {
         await WeightStorage.saveRecord(weightNum, date.toISOString());
       }
-      navigation.navigate('Home');
+      navigation.goBack();
     }
   };
 
@@ -94,6 +94,7 @@ export const useWeightRegistration = () => {
     formatTimeLabel,
     inputRef,
     t,
+    i18n,
     navigation
   };
 };

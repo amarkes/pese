@@ -52,6 +52,15 @@ export const HistoryScreen: React.FC = () => {
         weight: record.value.toString(),
         date: record.date 
       });
+    } else if (record.type === 'glucose') {
+      navigation.navigate('RegisterGlucose', {
+        editMode: true,
+        recordId: record.originalId,
+        glucose: record.value.toString(),
+        measurementType: record.measurementType,
+        observations: record.observations,
+        date: record.date
+      });
     }
   };
 

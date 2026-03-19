@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { WeightStorage } from '@/services/WeightStorage';
+import { GlucoseStorage } from '@/services/GlucoseStorage';
 
 export type HistoryItemType = 'weight' | 'glucose' | 'water' | 'sleep';
 
@@ -17,6 +18,8 @@ export interface HistoryRecord {
   subtitle?: string;
   status?: string;
   originalId: string;
+  measurementType?: string;
+  observations?: string;
 }
 
 export type PeriodType = 'day' | 'week' | 'month' | 'custom';
@@ -55,11 +58,29 @@ export const useHistory = () => {
       });
 
       const getGlucoseStatus = (value: number) => {
-        if (value >= 70 && value <= 95) return t('history.glucoseNormal');
-        if (value >= 96 && value <= 125) return t('history.glucosePreDiabetic');
-        if (value > 125) return t('history.glucoseDiabetic');
-        return t('history.glucoseNormal');
+        if (value <= 80) return t('glucose.msgLowTitle');
+        if (value <= 92) return t('glucose.msgNormalTitle');
+        if (value <= 150) return t('glucose.msgPreTitle');
+        return t('glucose.msgRiskyTitle');
       };
+
+      const glucose = await GlucoseStorage.getRecords();
+      
+      const glucoseRecords: HistoryRecord[] = glucose.map((g) => {
+        return {
+          id: `g-${g.id}`,
+          originalId: g.id,
+          type: 'glucose',
+          value: g.glucose,
+          valueDisplay: `${g.glucose}`,
+          unit: 'mg/dL',
+          date: g.date,
+          subtitle: `${t('history.glucoseSub')} • ${t(`glucose.${g.measurementType}`)}`,
+          status: getGlucoseStatus(g.glucose),
+          measurementType: g.measurementType,
+          observations: g.observations
+        };
+      });
 
       const getWaterStatus = (value: number, unit: string) => {
         const latestWeight = weights[0]?.weight || 75; // Using 75 as fallback
@@ -73,19 +94,8 @@ export const useHistory = () => {
         return t('history.waterLow');
       };
 
-      // Mocks for others (glucose, water, sleep) as requested until we have their screens
+      // Mocks for water and sleep
       const mocks: HistoryRecord[] = [
-        {
-          id: 'mock-g1',
-          originalId: 'g1',
-          type: 'glucose',
-          value: 98,
-          valueDisplay: '98',
-          unit: 'mg/dL',
-          date: new Date().toISOString(),
-          subtitle: `${t('history.glucoseSub')} • ${t('history.afterMeal')}`,
-          status: getGlucoseStatus(98)
-        },
         {
           id: 'mock-a1',
           originalId: 'a1',
@@ -110,7 +120,7 @@ export const useHistory = () => {
         }
       ];
 
-      setRecords([...weightRecords, ...mocks].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      setRecords([...weightRecords, ...glucoseRecords, ...mocks].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
     } catch (error) {
       console.error('Error loading history:', error);
     } finally {
@@ -163,6 +173,9 @@ export const useHistory = () => {
   const handleDelete = async (record: HistoryRecord) => {
     if (record.type === 'weight') {
       await WeightStorage.deleteRecord(record.originalId);
+      loadData();
+    } else if (record.type === 'glucose') {
+      await GlucoseStorage.deleteRecord(record.originalId);
       loadData();
     }
     setItemToDelete(null);

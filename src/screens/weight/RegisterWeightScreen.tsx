@@ -30,6 +30,7 @@ export const RegisterWeightScreen: React.FC = () => {
     formatTimeLabel,
     inputRef,
     t,
+    i18n,
     navigation
   } = useWeightRegistration();
 
@@ -38,7 +39,7 @@ export const RegisterWeightScreen: React.FC = () => {
       {/* Header */}
       <View className="flex-row items-center px-6 py-4 justify-between">
         <TouchableOpacity 
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.goBack()}
           className="w-10 h-10 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-900"
         >
           <ChevronLeft size={24} color={isDarkMode ? "#60A5FA" : "#3B82F6"} />
@@ -102,6 +103,7 @@ export const RegisterWeightScreen: React.FC = () => {
                       value={date}
                       mode="date"
                       display="inline"
+                      locale={i18n.language}
                       onChange={(event, selectedDate) => {
                         if (selectedDate) setDate(selectedDate);
                       }}
@@ -114,6 +116,7 @@ export const RegisterWeightScreen: React.FC = () => {
                 value={date}
                 mode="date"
                 display="default"
+                locale={i18n.language}
                 onChange={(event, selectedDate) => {
                   setShowDatePicker(false);
                   if (selectedDate) setDate(selectedDate);
@@ -143,6 +146,7 @@ export const RegisterWeightScreen: React.FC = () => {
                       mode="time"
                       is24Hour={false}
                       display="spinner"
+                      locale={i18n.language}
                       onChange={(event, selectedDate) => {
                         if (selectedDate) {
                           const newDate = new Date(date);
@@ -161,6 +165,7 @@ export const RegisterWeightScreen: React.FC = () => {
                 mode="time"
                 is24Hour={false}
                 display="default"
+                locale={i18n.language}
                 onChange={(event, selectedDate) => {
                   setShowTimePicker(false);
                   if (selectedDate) {
