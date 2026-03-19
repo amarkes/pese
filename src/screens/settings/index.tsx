@@ -22,62 +22,62 @@ const SettingsScreen: React.FC = () => {
         <TouchableOpacity className="w-10 h-10 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800">
           <ChevronLeft size={24} color={isDarkMode ? "#60A5FA" : "#3B82F6"} />
         </TouchableOpacity>
-        <Typography variant="h2" className="text-xl font-inter-bold">{t('settings.title')}</Typography>
+        <Typography variant="h2" className="text-xl font-outfit-bold">{t('settings.title')}</Typography>
         <View className="w-10" />
       </View>
 
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-6 pt-6">
         
-        <Typography variant="label" className="text-primary font-inter-bold tracking-widest mb-6">
+        <Typography variant="label" className="text-primary font-outfit-bold tracking-widest mb-6">
           {t('settings.personalGoals')}
         </Typography>
 
         <View className="mb-6">
-          <Typography variant="caption" className="mb-2 font-inter-semibold text-text-secondary">
+          <Typography variant="caption" className="mb-2 font-outfit-semibold text-text-secondary">
             {t('settings.weightGoal')}
           </Typography>
           <View className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex-row items-center px-4 h-16">
-            <Text className="flex-1 text-lg font-inter-medium text-text-light dark:text-text-dark">75.5</Text>
-            <Typography variant="caption" className="ml-2 font-inter-bold opacity-30">kg</Typography>
+            <Text className="flex-1 text-lg font-outfit-medium text-text-light dark:text-text-dark">75.5</Text>
+            <Typography variant="caption" className="ml-2 font-outfit-bold opacity-30">kg</Typography>
           </View>
         </View>
 
 
         <View className="flex-row gap-4 mb-6">
           <View className="flex-1">
-            <Typography variant="caption" className="mb-2 font-inter-semibold text-text-secondary">
+            <Typography variant="caption" className="mb-2 font-outfit-semibold text-text-secondary">
                 {t('settings.minGlucose')}
             </Typography>
             <View className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex-row items-center px-4 h-16">
-                <Text className="flex-1 text-lg font-inter-medium text-text-light dark:text-text-dark">70</Text>
-                <Typography variant="caption" className="ml-2 font-inter-bold opacity-30">mg/dL</Typography>
+                <Text className="flex-1 text-lg font-outfit-medium text-text-light dark:text-text-dark">70</Text>
+                <Typography variant="caption" className="ml-2 font-outfit-bold opacity-30">mg/dL</Typography>
             </View>
           </View>
           <View className="flex-1">
-            <Typography variant="caption" className="mb-2 font-inter-semibold text-text-secondary">
+            <Typography variant="caption" className="mb-2 font-outfit-semibold text-text-secondary">
                 {t('settings.maxGlucose')}
             </Typography>
             <View className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex-row items-center px-4 h-16">
-                <Text className="flex-1 text-lg font-inter-medium text-text-light dark:text-text-dark">130</Text>
-                <Typography variant="caption" className="ml-2 font-inter-bold opacity-30">mg/dL</Typography>
+                <Text className="flex-1 text-lg font-outfit-medium text-text-light dark:text-text-dark">130</Text>
+                <Typography variant="caption" className="ml-2 font-outfit-bold opacity-30">mg/dL</Typography>
             </View>
           </View>
         </View>
 
 
         <View className="mb-10">
-          <Typography variant="caption" className="mb-2 font-inter-semibold text-text-secondary">
+          <Typography variant="caption" className="mb-2 font-outfit-semibold text-text-secondary">
             {t('settings.dailyWaterGoal')}
           </Typography>
           <View className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex-row items-center px-4 h-16">
-            <Text className="flex-1 text-lg font-inter-medium text-text-light dark:text-text-dark">2500</Text>
-            <Typography variant="caption" className="ml-2 font-inter-bold opacity-30">ml</Typography>
+            <Text className="flex-1 text-lg font-outfit-medium text-text-light dark:text-text-dark">2500</Text>
+            <Typography variant="caption" className="ml-2 font-outfit-bold opacity-30">ml</Typography>
           </View>
         </View>
 
         {/* Section: Preferences */}
-        <Typography variant="label" className="text-primary font-inter-bold tracking-widest mb-6 border-t border-slate-50 dark:border-slate-800 pt-8">
+        <Typography variant="label" className="text-primary font-outfit-bold tracking-widest mb-6 border-t border-slate-50 dark:border-slate-800 pt-8">
           {t('settings.preferences')}
         </Typography>
 

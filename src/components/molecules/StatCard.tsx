@@ -52,7 +52,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         
         {trend && (
           <View className={`px-2 py-0.5 rounded-full ${trendBgColor}`}>
-            <Typography variant="caption" className={`text-xs font-inter-bold ${trendColor}`}>
+            <Typography variant="caption" className={`text-xs font-outfit-bold ${trendColor}`}>
               📉 {trend}
             </Typography>
           </View>
@@ -60,8 +60,8 @@ export const StatCard: React.FC<StatCardProps> = ({
       </View>
       
       <View className="flex-row items-baseline mb-1">
-        <Typography variant="h1" className="text-3xl font-inter-bold mr-1">{value}</Typography>
-        {unit && <Typography variant="h3" className="text-xl font-inter-semibold text-text-secondary">{unit}</Typography>}
+        <Typography variant="h1" className="text-3xl font-outfit-bold mr-1">{value}</Typography>
+        {unit && <Typography variant="h3" className="text-xl font-outfit-semibold text-text-secondary">{unit}</Typography>}
       </View>
       
       {subtitle && (

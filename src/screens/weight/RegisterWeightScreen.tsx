@@ -43,7 +43,7 @@ export const RegisterWeightScreen: React.FC = () => {
         >
           <ChevronLeft size={24} color={isDarkMode ? "#60A5FA" : "#3B82F6"} />
         </TouchableOpacity>
-        <Typography variant="h2" className="text-xl font-inter-bold">{t('weight.registerTitle')}</Typography>
+        <Typography variant="h2" className="text-xl font-outfit-bold">{t('weight.registerTitle')}</Typography>
         <View className="w-10" />
       </View>
 
@@ -89,13 +89,13 @@ export const RegisterWeightScreen: React.FC = () => {
                   <View className="bg-white dark:bg-slate-900 rounded-t-3xl p-6 pb-12">
                     <View className="flex-row justify-between mb-4">
                       <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                        <Typography className="text-blue-500 font-inter-semibold">{t('common.cancel')}</Typography>
+                        <Typography className="text-blue-500 font-outfit-semibold">{t('common.cancel')}</Typography>
                       </TouchableOpacity>
-                      <Typography className="font-inter-bold text-slate-800 dark:text-white">
+                      <Typography className="font-outfit-bold text-slate-800 dark:text-white">
                         {t('weight.selectDate') || 'Selecionar Data'}
                       </Typography>
                       <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                        <Typography className="text-blue-500 font-inter-bold">{t('common.done')}</Typography>
+                        <Typography className="text-blue-500 font-outfit-bold">{t('common.done')}</Typography>
                       </TouchableOpacity>
                     </View>
                     <DateTimePicker
@@ -129,13 +129,13 @@ export const RegisterWeightScreen: React.FC = () => {
                   <View className="bg-white dark:bg-slate-900 rounded-t-3xl p-6 pb-12">
                     <View className="flex-row justify-between mb-4">
                       <TouchableOpacity onPress={() => setShowTimePicker(false)}>
-                        <Typography className="text-blue-500 font-inter-semibold">{t('common.cancel')}</Typography>
+                        <Typography className="text-blue-500 font-outfit-semibold">{t('common.cancel')}</Typography>
                       </TouchableOpacity>
-                      <Typography className="font-inter-bold text-slate-800 dark:text-white">
+                      <Typography className="font-outfit-bold text-slate-800 dark:text-white">
                         {t('weight.selectTime') || 'Selecionar Hora'}
                       </Typography>
                       <TouchableOpacity onPress={() => setShowTimePicker(false)}>
-                        <Typography className="text-blue-500 font-inter-bold">{t('common.done')}</Typography>
+                        <Typography className="text-blue-500 font-outfit-bold">{t('common.done')}</Typography>
                       </TouchableOpacity>
                     </View>
                     <DateTimePicker

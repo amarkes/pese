@@ -21,7 +21,7 @@ export const WeightInputCard: React.FC<WeightInputCardProps> = ({
       <View className="flex-row items-center justify-center w-full">
         <TextInput
           ref={inputRef}
-          className="text-7xl font-inter-bold text-text-light dark:text-text-dark text-center min-w-[200px] py-4"
+          className="text-7xl font-outfit-bold text-text-light dark:text-text-dark text-center min-w-[200px] py-4"
           style={Platform.select({
             ios: { height: 120, verticalAlign: 'middle' },
             android: { includeFontPadding: false, textAlignVertical: 'center' }
@@ -33,7 +33,7 @@ export const WeightInputCard: React.FC<WeightInputCardProps> = ({
           onChangeText={setWeight}
           autoFocus
         />
-        <Typography variant="h2" className="text-3xl font-inter-bold text-text-secondary/30 dark:text-text-secondary-dark/30 absolute right-8 bottom-12">kg</Typography>
+        <Typography variant="h2" className="text-3xl font-outfit-bold text-text-secondary/30 dark:text-text-secondary-dark/30 absolute right-8 bottom-12">kg</Typography>
       </View>
       <View className="w-12 h-1.5 bg-blue-500 rounded-full mt-2" />
     </Card>

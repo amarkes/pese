@@ -26,7 +26,7 @@ export const QuickAction: React.FC<QuickActionProps> = ({
       className="bg-white dark:bg-slate-900 rounded-3xl p-4 items-center justify-center flex-1 mx-1 shadow-sm border border-slate-50/5 dark:border-slate-800 h-32"
     >
       <IconBox icon={icon} color={color} bgColor={bgColor} size={28} className="mb-3" />
-      <Typography variant="caption" className="font-inter-bold text-center text-text dark:text-text-dark leading-tight px-1">
+      <Typography variant="caption" className="font-outfit-medium text-center text-text dark:text-text-dark leading-tight px-1">
         {label}
       </Typography>
     </TouchableOpacity>

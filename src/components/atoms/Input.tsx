@@ -11,14 +11,14 @@ interface InputProps extends TextInputProps {
 export const Input: React.FC<InputProps> = ({ label, suffix, className = '', ...props }) => {
   return (
     <View className={`flex-1 ${className}`}>
-      {label && <Typography variant="caption" className="mb-2 font-inter-semibold text-text-secondary">{label}</Typography>}
+      {label && <Typography variant="caption" className="mb-2 font-outfit-semibold text-text-secondary">{label}</Typography>}
       <View className="bg-slate-50 border border-slate-100 rounded-2xl flex-row items-center px-4 h-16">
         <TextInput 
-          className="flex-1 text-lg font-inter-medium text-text" 
+          className="flex-1 text-lg font-outfit-medium text-text" 
           placeholderTextColor="#9CA3AF"
           {...props} 
         />
-        {suffix && <Typography variant="caption" className="ml-2 font-inter-bold opacity-30">{suffix}</Typography>}
+        {suffix && <Typography variant="caption" className="ml-2 font-outfit-bold opacity-30">{suffix}</Typography>}
       </View>
     </View>
   );

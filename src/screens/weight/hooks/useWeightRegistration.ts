@@ -1,12 +1,13 @@
 import { useState, useRef, useCallback } from 'react';
 import { TextInput } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
 import { WeightStorage, WeightRecord } from '@/services/WeightStorage';
 
 export const useWeightRegistration = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const inputRef = useRef<TextInput>(null);
 
   const [weight, setWeight] = useState('');
@@ -15,10 +16,20 @@ export const useWeightRegistration = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  // Edit Mode state
+  const isEditing = route.params?.editMode;
+  const recordId = route.params?.recordId;
+
   useFocusEffect(
     useCallback(() => {
-      setWeight('');
-      setDate(new Date());
+      if (isEditing) {
+        setWeight(route.params.weight || '');
+        setDate(new Date(route.params.date));
+      } else {
+        setWeight('');
+        setDate(new Date());
+      }
+      
       setShowDatePicker(false);
       setShowTimePicker(false);
       loadLastRecord();
@@ -28,7 +39,7 @@ export const useWeightRegistration = () => {
       }, 300);
 
       return () => clearTimeout(timer);
-    }, [])
+    }, [isEditing, route.params])
   );
 
   const loadLastRecord = async () => {
@@ -39,7 +50,11 @@ export const useWeightRegistration = () => {
   const handleSave = async () => {
     const weightNum = parseFloat(weight.replace(',', '.'));
     if (!isNaN(weightNum) && weightNum > 0) {
-      await WeightStorage.saveRecord(weightNum, date.toISOString());
+      if (isEditing && recordId) {
+        await WeightStorage.updateRecord(recordId, weightNum, date.toISOString());
+      } else {
+        await WeightStorage.saveRecord(weightNum, date.toISOString());
+      }
       navigation.navigate('Home');
     }
   };

@@ -26,7 +26,7 @@ export const DateTimeSelectors: React.FC<DateTimeSelectorsProps> = ({
       >
         <View className="flex-row items-center">
           <Calendar size={20} color={isDarkMode ? "#8E8E93" : "#94A3B8"} className="mr-3" />
-          <Typography variant="body" className="font-inter-semibold text-xs">{dateLabel}</Typography>
+          <Typography variant="body" className="font-outfit-semibold text-xs">{dateLabel}</Typography>
         </View>
         <ChevronLeft size={16} color="#94A3B8" style={{ transform: [{ rotate: '-90deg' }] }} />
       </TouchableOpacity>
@@ -37,7 +37,7 @@ export const DateTimeSelectors: React.FC<DateTimeSelectorsProps> = ({
       >
         <View className="flex-row items-center">
           <Clock size={20} color={isDarkMode ? "#8E8E93" : "#94A3B8"} className="mr-3" />
-          <Typography variant="body" className="font-inter-semibold text-xs">{timeLabel}</Typography>
+          <Typography variant="body" className="font-outfit-semibold text-xs">{timeLabel}</Typography>
         </View>
         <ChevronLeft size={16} color="#94A3B8" style={{ transform: [{ rotate: '-90deg' }] }} />
       </TouchableOpacity>

@@ -25,7 +25,7 @@ export const TrendIndicator: React.FC<TrendIndicatorProps> = ({
       )}
       <Typography 
         variant="body" 
-        className={`font-inter-semibold ${weightDiff <= 0 ? 'text-emerald-500' : 'text-orange-500'}`}
+        className={`font-outfit-semibold ${weightDiff <= 0 ? 'text-emerald-500' : 'text-orange-500'}`}
       >
         {diffLabel}
       </Typography>

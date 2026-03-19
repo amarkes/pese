@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import { View, SectionList, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useColorScheme } from 'nativewind';
+import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { History } from 'lucide-react-native';
+import Svg, { Path } from 'react-native-svg';
+
+import { Typography } from '@/components/atoms/Typography';
+import { HistoryHeader } from './components/HistoryHeader';
+import { FilterTabs } from './components/FilterTabs';
+import { HistoryCard } from './components/HistoryCard';
+import { PeriodSelectorModal } from './components/PeriodSelectorModal';
+import { DeleteConfirmationModal } from './components/DeleteConfirmationModal';
+import { useHistory } from './hooks/useHistory';
+
+const MoveIcon = ({ color }: { color: string }) => (
+  <Svg width="12" height="13" viewBox="0 0 12 13" fill="none">
+    <Path d="M5.73125 12.25C5.49792 12.25 5.27431 12.2062 5.06042 12.1187C4.84653 12.0312 4.65694 11.9049 4.49167 11.7396L1.51667 8.75L1.95417 8.29792C2.10972 8.14236 2.29201 8.03785 2.50104 7.98438C2.71007 7.9309 2.91667 7.93333 3.12083 7.99167L4.08333 8.26875V3.5C4.08333 3.33472 4.13924 3.19618 4.25104 3.08437C4.36285 2.97257 4.50139 2.91667 4.66667 2.91667C4.83194 2.91667 4.97049 2.97257 5.08229 3.08437C5.1941 3.19618 5.25 3.33472 5.25 3.5V9.81458L3.83542 9.42083L5.32292 10.9083C5.37153 10.9569 5.43229 10.9983 5.50521 11.0323C5.57812 11.0663 5.65347 11.0833 5.73125 11.0833H8.16667C8.4875 11.0833 8.76215 10.9691 8.99063 10.7406C9.2191 10.5122 9.33333 10.2375 9.33333 9.91667V7.58333C9.33333 7.41806 9.38924 7.27951 9.50104 7.16771C9.61285 7.0559 9.75139 7 9.91667 7C10.0819 7 10.2205 7.0559 10.3323 7.16771C10.4441 7.27951 10.5 7.41806 10.5 7.58333V9.91667C10.5 10.5583 10.2715 11.1076 9.81458 11.5646C9.35764 12.0215 8.80833 12.25 8.16667 12.25H5.73125ZM5.83333 8.16667V5.83333C5.83333 5.66806 5.88924 5.52951 6.00104 5.41771C6.11285 5.3059 6.25139 5.25 6.41667 5.25C6.58194 5.25 6.72049 5.3059 6.83229 5.41771C6.9441 5.52951 7 5.66806 7 5.83333V8.16667H5.83333ZM7.58333 8.16667V6.41667C7.58333 6.25139 7.63924 6.11285 7.75104 6.00104C7.86285 5.88924 8.00139 5.83333 8.16667 5.83333C8.33194 5.83333 8.47049 5.88924 8.58229 6.00104C8.6941 6.11285 8.75 6.25139 8.75 6.41667V8.16667H7.58333ZM0 3.5V0.583333H0.875V1.76458C1.575 1.19097 2.34792 0.753472 3.19375 0.452083C4.03958 0.150694 4.91944 0 5.83333 0C7.25278 0 8.50694 0.325694 9.59583 0.977083C10.6847 1.62847 11.375 2.46944 11.6667 3.5H10.7479C10.3785 2.68333 9.75382 2.04167 8.87396 1.575C7.9941 1.10833 6.98056 0.875 5.83333 0.875C4.97778 0.875 4.15625 1.02569 3.36875 1.32708C2.58125 1.62847 1.86667 2.06111 1.225 2.625H2.91667V3.5H0Z" fill={color}/>
+  </Svg>
+);
+
+export const HistoryScreen: React.FC = () => {
+  const { colorScheme } = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const { t } = useTranslation();
+  const navigation = useNavigation<any>();
+  
+  const {
+    groupedRecords,
+    activeFilter,
+    setActiveFilter,
+    period,
+    setPeriod,
+    loading,
+    showPeriodModal,
+    setShowPeriodModal,
+    itemToDelete,
+    setItemToDelete,
+    handleDelete,
+    loadData
+  } = useHistory();
+
+  const [showFilters] = useState(true);
+
+  const onEdit = (record: any) => {
+    if (record.type === 'weight') {
+      navigation.navigate('Add', { 
+        editMode: true, 
+        recordId: record.originalId,
+        weight: record.value.toString(),
+        date: record.date 
+      });
+    }
+  };
+
+  return (
+    <View className="flex-1 bg-background dark:bg-background-dark">
+      <SafeAreaView edges={['top']} className="bg-background dark:bg-background-dark" style={{ zIndex: 10 }}>
+        <HistoryHeader 
+          onToggleFilters={() => setShowPeriodModal(true)} 
+          isDarkMode={isDarkMode} 
+        />
+        
+        {showFilters && (
+          <FilterTabs 
+            activeFilter={activeFilter} 
+            setActiveFilter={setActiveFilter} 
+          />
+        )}
+      </SafeAreaView>
+
+      <SectionList
+        sections={groupedRecords}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <HistoryCard 
+            record={item} 
+            isDarkMode={isDarkMode}
+            onDelete={setItemToDelete}
+            onEdit={onEdit}
+          />
+        )}
+        renderSectionHeader={({ section: { title } }) => (
+          <Typography variant="label" className="text-slate-400 dark:text-slate-500 bg-background dark:bg-background-dark pb-4 pt-4 tracking-widest px-6">
+            {title}
+          </Typography>
+        )}
+        contentContainerClassName="px-6 pb-24"
+        contentContainerStyle={{ overflow: 'visible' }}
+        showsVerticalScrollIndicator={false}
+        stickySectionHeadersEnabled={false}
+        automaticallyAdjustContentInsets={false}
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustsScrollIndicatorInsets={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={loading} 
+            onRefresh={loadData} 
+            tintColor={isDarkMode ? "#60A5FA" : "#3B82F6"}
+          />
+        }
+        ListEmptyComponent={
+          <View className="flex-1 items-center justify-center py-20">
+            <View className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full items-center justify-center mb-6">
+               <History size={40} color="#94A3B8" />
+            </View>
+            <Typography variant="body" className="text-slate-400 dark:text-slate-500 text-center font-outfit-medium">
+              {t('history.noData')}
+            </Typography>
+          </View>
+        }
+        ListHeaderComponent={
+          groupedRecords.length > 0 ? (
+            <View className="items-center py-4 opacity-40 flex-row justify-center space-x-2">
+               <MoveIcon color={isDarkMode ? "#94A3B8" : "#64748B"} />
+               <Typography variant="label" className="ml-2 text-[10px] uppercase tracking-tighter">
+                 {t('history.swipeHint')}
+               </Typography>
+            </View>
+          ) : null
+        }
+      />
+
+      <PeriodSelectorModal 
+        visible={showPeriodModal}
+        onClose={() => setShowPeriodModal(false)}
+        activePeriod={period}
+        onSelect={setPeriod}
+        isDarkMode={isDarkMode}
+      />
+
+      <DeleteConfirmationModal 
+        visible={!!itemToDelete}
+        onClose={() => setItemToDelete(null)}
+        onConfirm={() => itemToDelete && handleDelete(itemToDelete)}
+        isDarkMode={isDarkMode}
+      />
+    </View>
+  );
+};

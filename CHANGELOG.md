@@ -9,6 +9,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.3.0] - 2026-03-19 23:30
+- add history page, replace inter font with outfit, update dependencies
+
 ## [0.2.0] - 2026-03-18 20:32
 - add page add weight
 

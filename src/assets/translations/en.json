@@ -33,7 +33,11 @@
     "units": "Units of Measurement",
     "unitsSubtitle": "Kilograms (kg), Milliliters (ml)",
     "profile": "Profile",
-    "save": "Save Changes"
+    "save": "Save Changes",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "custom": "Custom"
   },
   "tabs": {
     "home": "Home",
@@ -51,5 +55,37 @@
     "time": "Time",
     "selectDate": "Select Date",
     "selectTime": "Select Time"
+  },
+  "history": {
+    "title": "Health History",
+    "filterAll": "All",
+    "filterWeight": "Weight",
+    "filterGlucose": "Glucose",
+    "filterWater": "Water",
+    "filterSleep": "Sleep",
+    "today": "TODAY",
+    "yesterday": "YESTERDAY",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Delete Record",
+    "deleteMessage": "Are you sure you want to delete this record? This action is irreversible.",
+    "periodModalTitle": "Select Period",
+    "customRange": "Custom Range",
+    "noData": "No records found for this period.",
+    "swipeHint": "Swipe to edit or delete",
+    "weightSub": "Body Weight",
+    "glucoseSub": "Blood Glucose",
+    "waterSub": "Water Intake",
+    "sleepSub": "Sleep",
+    "fasting": "Fasting",
+    "afterMeal": "Post-meal",
+    "glucoseNormal": "Normal",
+    "glucosePreDiabetic": "Pre-diabetic",
+    "glucoseDiabetic": "Diabetic",
+    "waterGood": "Well done!",
+    "waterFair": "Could be better",
+    "waterLow": "Drink more water!",
+    "dailyGoalMet": "Goal met!",
+    "totalDay": "Day total"
   }
 }

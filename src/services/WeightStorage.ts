@@ -43,4 +43,29 @@ export const WeightStorage = {
     const records = await this.getRecords();
     return records.length > 0 ? records[0] : null;
   },
+
+  async deleteRecord(id: string): Promise<void> {
+    try {
+      const records = await this.getRecords();
+      const updatedRecords = records.filter(r => r.id !== id);
+      await AsyncStorage.setItem(STORAGE_KEYS.WEIGHTS, JSON.stringify(updatedRecords));
+    } catch (e) {
+      console.error('Error deleting weight record:', e);
+      throw e;
+    }
+  },
+
+  async updateRecord(id: string, weight: number, date: string): Promise<void> {
+    try {
+      const records = await this.getRecords();
+      const index = records.findIndex(r => r.id === id);
+      if (index !== -1) {
+        records[index] = { ...records[index], weight, date };
+        await AsyncStorage.setItem(STORAGE_KEYS.WEIGHTS, JSON.stringify(records));
+      }
+    } catch (e) {
+      console.error('Error updating weight record:', e);
+      throw e;
+    }
+  },
 };

@@ -34,9 +34,9 @@ export const SettingRow: React.FC<SettingRowProps> = ({
     >
 
       <View className="flex-1 mr-4">
-        <Typography variant="body" className="text-lg font-inter-semibold text-text dark:text-text-dark">{label}</Typography>
+        <Typography variant="body" className="text-lg font-outfit-semibold text-text dark:text-text-dark">{label}</Typography>
         {subtitle && (
-            <Typography variant="caption" className="text-xs font-inter leading-relaxed text-text-secondary dark:text-text-secondary-dark mt-1">
+            <Typography variant="caption" className="text-xs font-outfit leading-relaxed text-text-secondary dark:text-text-secondary-dark mt-1">
                 {subtitle}
             </Typography>
         )}

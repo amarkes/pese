@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 
 import DashboardScreen from '@/screens/dashboard/DashboardScreen';
-import { HistoryScreen } from '@/screens/history/HistoryScreen';
+import { HistoryScreen } from '@/screens/history';
 import SettingsScreen from '@/screens/settings';
 import { RegisterWeightScreen } from '@/screens/weight/RegisterWeightScreen';
 
@@ -90,6 +90,16 @@ export const TabNavigator = () => {
           tabBarLabel: '',
           tabBarButton: AddButton,
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (_e) => {
+            navigation.navigate('Add', { 
+              editMode: false, 
+              recordId: undefined, 
+              weight: '', 
+              date: undefined 
+            });
+          },
+        })}
       />
       <Tab.Screen
         name="History"
@@ -98,6 +108,15 @@ export const TabNavigator = () => {
           tabBarLabel: t('tabs.history'),
           tabBarIcon: HistoryIcon,
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (_e) => {
+            // Se já estiver na aba, reseta para o estado inicial
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'History' }],
+            });
+          },
+        })}
       />
       <Tab.Screen
         name="Settings"
