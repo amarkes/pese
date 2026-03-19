@@ -66,13 +66,26 @@ async function main() {
 
   // 2. Lint & Testes
   console.log("🔍 Rodando lint...");
+  let lintOutput = "";
   try {
-    run("./node_modules/.bin/eslint .", { exitOnError: false });
-    console.log("✅ Lint realizado com sucesso!\n");
+    lintOutput = run("npm run lint", { silent: true, exitOnError: false });
   } catch (error) {
+    // ESLint sai com código != 0 quando há errors
+    lintOutput = (error.stdout || "") + (error.stderr || "");
+    console.log(lintOutput);
     console.error("\n\x1b[31m❌ Falha no lint. Corrija os erros acima antes de continuar.\x1b[0m");
     process.exit(1);
   }
+
+  // ESLint retorna exit code 0 para warnings, então verificamos o output manualmente
+  const hasLintIssues = /\d+ problems?/i.test(lintOutput) || /warning|error/i.test(lintOutput);
+  if (hasLintIssues) {
+    console.log(lintOutput);
+    console.error("\n\x1b[31m❌ Lint encontrou problemas (warnings ou errors). Corrija-os antes de continuar.\x1b[0m");
+    process.exit(1);
+  }
+
+  console.log("✅ Lint realizado com sucesso!\n");
   
   // 3. Carregar versão atual
   const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));

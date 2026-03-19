@@ -2,7 +2,7 @@ import './global.css';
 import '@/utils/i18n';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
@@ -13,7 +13,7 @@ export default function App() {
   const isDarkMode = colorScheme === 'dark';
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <StatusBar 
           barStyle={isDarkMode ? 'light-content' : 'dark-content'} 
@@ -26,3 +26,7 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+});

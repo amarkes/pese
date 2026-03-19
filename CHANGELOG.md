@@ -10,6 +10,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.3.1] - 2026-03-19 23:35
+- fix release script lint
+
 ## [0.3.0] - 2026-03-19 23:30
 - add history page, replace inter font with outfit, update dependencies
 

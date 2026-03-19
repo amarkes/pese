@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, SectionList, RefreshControl } from 'react-native';
+import { View, SectionList, RefreshControl, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +57,7 @@ export const HistoryScreen: React.FC = () => {
 
   return (
     <View className="flex-1 bg-background dark:bg-background-dark">
-      <SafeAreaView edges={['top']} className="bg-background dark:bg-background-dark" style={{ zIndex: 10 }}>
+      <SafeAreaView edges={['top']} className="bg-background dark:bg-background-dark" style={historyStyles.safeArea}>
         <HistoryHeader 
           onToggleFilters={() => setShowPeriodModal(true)} 
           isDarkMode={isDarkMode} 
@@ -88,7 +88,7 @@ export const HistoryScreen: React.FC = () => {
           </Typography>
         )}
         contentContainerClassName="px-6 pb-24"
-        contentContainerStyle={{ overflow: 'visible' }}
+        contentContainerStyle={historyStyles.overflow}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
         automaticallyAdjustContentInsets={false}
@@ -140,3 +140,8 @@ export const HistoryScreen: React.FC = () => {
     </View>
   );
 };
+
+const historyStyles = StyleSheet.create({
+  safeArea: { zIndex: 10 },
+  overflow: { overflow: 'visible' },
+});

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, TouchableOpacity, Animated } from 'react-native';
+import { View, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Pencil, Trash2, Scale, Droplet, Activity, Moon } from 'lucide-react-native';
 import { Typography } from '@/components/atoms/Typography';
@@ -110,15 +110,15 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ record, isDarkMode, on
   });
 
   return (
-    <View className="mb-4" style={{ overflow: 'visible' }}>
+    <View className="mb-4" style={cardStyles.overflow}>
       <Swipeable 
         ref={swipeableRef}
         renderRightActions={renderRightActions} 
         friction={2} 
         enableTrackpadTwoFingerGesture
         rightThreshold={40}
-        containerStyle={{ overflow: 'visible' }}
-        childrenContainerStyle={{ overflow: 'visible' }}
+        containerStyle={cardStyles.overflow}
+        childrenContainerStyle={cardStyles.overflow}
       >
         <Card className="flex-row items-center justify-between p-6">
         <View className="flex-row items-center flex-1">
@@ -185,3 +185,7 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ record, isDarkMode, on
     </View>
   );
 };
+
+const cardStyles = StyleSheet.create({
+  overflow: { overflow: 'visible' },
+});
