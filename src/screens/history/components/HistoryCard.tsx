@@ -84,14 +84,16 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ record, isDarkMode, on
 
     return (
       <View className="flex-row items-center ml-4 gap-x-3">
-        <TouchableOpacity 
-          onPress={handleEdit}
-          className="bg-blue-500 w-16 items-center justify-center rounded-2xl h-full max-h-[100px]"
-        >
-          <Animated.View style={{ transform: [{ scale }] }}>
-            <Pencil size={20} color="white" />
-          </Animated.View>
-        </TouchableOpacity>
+        {record.type !== 'water' && (
+          <TouchableOpacity 
+            onPress={handleEdit}
+            className="bg-blue-500 w-16 items-center justify-center rounded-2xl h-full max-h-[100px]"
+          >
+            <Animated.View style={{ transform: [{ scale }] }}>
+              <Pencil size={20} color="white" />
+            </Animated.View>
+          </TouchableOpacity>
+        )}
         
         <TouchableOpacity 
           onPress={handleDelete}

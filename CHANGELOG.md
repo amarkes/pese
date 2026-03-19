@@ -16,6 +16,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.8.0] - 2026-03-19 20:55
+- feat: Add PDF and CSV export functionality for health reports, including a new date range modal and updated navigation.
+
 ## [0.7.0] - 2026-03-19 20:08
 - feat: Implement new reports screen with data summary, period selection, data inclusion, and export actions, along with corresponding translations.
 

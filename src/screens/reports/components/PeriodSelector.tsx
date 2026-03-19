@@ -7,16 +7,19 @@ import { useTranslation } from 'react-i18next';
 interface PeriodSelectorProps {
   period: number;
   setPeriod: (period: number) => void;
+  isCustom?: boolean;
+  customLabel?: string;
+  onCustomPress: () => void;
 }
 
-export const PeriodSelector = ({ period, setPeriod }: PeriodSelectorProps) => {
+export const PeriodSelector = ({ period, setPeriod, isCustom, customLabel, onCustomPress }: PeriodSelectorProps) => {
   const { t } = useTranslation();
 
-  const renderPeriodOption = (label: string, value: number) => {
-    const isSelected = period === value;
+  const renderPeriodOption = (label: string, value: number, onPress?: () => void, selected?: boolean) => {
+    const isSelected = selected ?? period === value;
     return (
       <TouchableOpacity 
-        onPress={() => setPeriod(value)}
+        onPress={onPress ?? (() => setPeriod(value))}
         className={`flex-1 items-center justify-center py-3 rounded-xl border-2 ${isSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900'} mb-2`}
       >
         <Typography className={`font-outfit-medium ${isSelected ? 'text-blue-500' : 'text-slate-600 dark:text-slate-400'}`}>
@@ -36,7 +39,12 @@ export const PeriodSelector = ({ period, setPeriod }: PeriodSelectorProps) => {
       </View>
       {renderPeriodOption(t('reports.last30days'), 30)}
       {renderPeriodOption(t('reports.thisMonth'), new Date().getDate())}
-      {renderPeriodOption(t('reports.custom'), 90)}
+      {renderPeriodOption(
+        isCustom && customLabel ? customLabel : t('reports.custom'),
+        -1,
+        onCustomPress,
+        isCustom,
+      )}
     </View>
   );
 };

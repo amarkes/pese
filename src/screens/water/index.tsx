@@ -101,7 +101,7 @@ export const RegisterWaterScreen: React.FC = () => {
               <Typography variant="label" className="text-slate-400 dark:text-slate-500 tracking-widest uppercase text-xs">
                 {t('water.recentActivity')}
               </Typography>
-              <TouchableOpacity onPress={() => navigation.navigate('History')}>
+              <TouchableOpacity onPress={() => navigation.navigate('Tabs', { screen: 'History' })}>
                 <Typography className="text-blue-600 dark:text-blue-500 font-outfit-bold text-sm">
                   {t('water.seeAll')}
                 </Typography>

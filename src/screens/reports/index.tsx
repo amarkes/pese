@@ -12,10 +12,22 @@ import { DataInclusionSelector } from './components/DataInclusionSelector';
 import { ExportSummary } from './components/ExportSummary';
 import { ReportSummary } from './components/ReportSummary';
 import { ExportActions } from './components/ExportActions';
+import { DateRangeModal } from './components/DateRangeModal';
+
+type PeriodMode = 'last30' | 'thisMonth' | 'custom';
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 
 export const ReportsScreen = () => {
   const { t } = useTranslation();
-  const [period, setPeriod] = useState(30);
+
+  // Period state
+  const [periodMode, setPeriodMode] = useState<PeriodMode>('last30');
+  const [customStart, setCustomStart] = useState<Date | null>(null);
+  const [customEnd, setCustomEnd] = useState<Date | null>(null);
+  const [showDateModal, setShowDateModal] = useState(false);
+
   const [dataIncluded, setDataIncluded] = useState({ weight: true, glucose: true, water: true });
 
   const [stats, setStats] = useState({
@@ -29,6 +41,22 @@ export const ReportsScreen = () => {
     endDate: '',
   });
 
+  // Derive the actual date range from the current mode
+  const getDateRange = useCallback((): { past: Date; now: Date } => {
+    const now = new Date();
+    if (periodMode === 'custom' && customStart && customEnd) {
+      return { past: customStart, now: customEnd };
+    }
+    const past = new Date();
+    if (periodMode === 'thisMonth') {
+      past.setDate(1); // first day of current month
+      past.setHours(0, 0, 0, 0);
+    } else {
+      past.setDate(now.getDate() - 30);
+    }
+    return { past, now };
+  }, [periodMode, customStart, customEnd]);
+
   const loadData = useCallback(async () => {
     try {
       const weights = await WeightStorage.getRecords();
@@ -36,18 +64,17 @@ export const ReportsScreen = () => {
       const waters = await WaterStorage.getRecords();
       const settings = await SettingsStorage.getSettings();
 
-      const now = new Date();
-      const past = new Date();
-      past.setDate(now.getDate() - period);
+      const { past, now } = getDateRange();
+      const daySpan = Math.max(1, Math.round((now.getTime() - past.getTime()) / 86400000));
 
-      const fWeights = weights.filter(w => new Date(w.date) >= past);
-      const fGlucoses = glucoses.filter(g => new Date(g.date) >= past);
-      const fWaters = waters.filter(w => new Date(w.date) >= past);
+      const fWeights = weights.filter(w => new Date(w.date) >= past && new Date(w.date) <= now);
+      const fGlucoses = glucoses.filter(g => new Date(g.date) >= past && new Date(g.date) <= now);
+      const fWaters = waters.filter(w => new Date(w.date) >= past && new Date(w.date) <= now);
 
       const weightAvg = fWeights.length ? fWeights.reduce((a, b) => a + b.weight, 0) / fWeights.length : 0;
       const glucoseAvg = fGlucoses.length ? fGlucoses.reduce((a, b) => a + b.glucose, 0) / fGlucoses.length : 0;
       const waterSum = fWaters.reduce((a, b) => a + b.amount, 0);
-      const waterAvg = period > 0 ? waterSum / period : 0;
+      const waterAvg = waterSum / daySpan;
 
       setStats({
         totalRecords: fWeights.length + fGlucoses.length + fWaters.length,
@@ -56,13 +83,13 @@ export const ReportsScreen = () => {
         glucoseAvg,
         waterAvg,
         waterGoal: Number(settings.waterGoal) || 2000,
-        startDate: past.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
-        endDate: now.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+        startDate: fmt(past),
+        endDate: fmt(now),
       });
     } catch (e) {
       console.error(e);
     }
-  }, [period]);
+  }, [getDateRange]);
 
   useEffect(() => {
     loadData();
@@ -71,6 +98,28 @@ export const ReportsScreen = () => {
   const toggleInclude = (key: keyof typeof dataIncluded) => {
     setDataIncluded(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const handlePeriodSet = (mode: PeriodMode) => {
+    setPeriodMode(mode);
+    if (mode === 'custom') {
+      setCustomStart(null);
+      setCustomEnd(null);
+    }
+  };
+
+  const handleCustomConfirm = (start: Date, end: Date) => {
+    setCustomStart(start);
+    setCustomEnd(end);
+    setPeriodMode('custom');
+  };
+
+  // Map periodMode to a number value that PeriodSelector uses for highlight
+  const periodValue = periodMode === 'last30' ? 30 : periodMode === 'thisMonth' ? new Date().getDate() : -1;
+
+  const customLabel =
+    periodMode === 'custom' && customStart && customEnd
+      ? `${fmt(customStart)} – ${fmt(customEnd)}`
+      : undefined;
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50 dark:bg-slate-950">
@@ -81,7 +130,16 @@ export const ReportsScreen = () => {
       </View>
 
       <ScrollView className="flex-1 p-5" showsVerticalScrollIndicator={false}>
-        <PeriodSelector period={period} setPeriod={setPeriod} />
+        <PeriodSelector
+          period={periodValue}
+          setPeriod={(v) => {
+            if (v === 30) handlePeriodSet('last30');
+            else handlePeriodSet('thisMonth');
+          }}
+          isCustom={periodMode === 'custom'}
+          customLabel={customLabel}
+          onCustomPress={() => setShowDateModal(true)}
+        />
         <DataInclusionSelector dataIncluded={dataIncluded} toggleInclude={toggleInclude} />
         <ExportSummary
           startDate={stats.startDate}
@@ -89,8 +147,14 @@ export const ReportsScreen = () => {
           totalRecords={stats.totalRecords}
         />
         <ReportSummary dataIncluded={dataIncluded} stats={stats} />
-        <ExportActions />
+        <ExportActions stats={stats} dataIncluded={dataIncluded} />
       </ScrollView>
+
+      <DateRangeModal
+        visible={showDateModal}
+        onClose={() => setShowDateModal(false)}
+        onConfirm={handleCustomConfirm}
+      />
     </SafeAreaView>
   );
 };

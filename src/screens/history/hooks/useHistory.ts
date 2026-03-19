@@ -3,6 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { WeightStorage } from '@/services/WeightStorage';
 import { GlucoseStorage } from '@/services/GlucoseStorage';
+import { WaterStorage } from '@/services/WaterStorage';
 
 export type HistoryItemType = 'weight' | 'glucose' | 'water' | 'sleep';
 
@@ -82,45 +83,20 @@ export const useHistory = () => {
         };
       });
 
-      const getWaterStatus = (value: number, unit: string) => {
-        const latestWeight = weights[0]?.weight || 75; // Using 75 as fallback
-        const dayGoal = latestWeight * 35; // Standard crazy calculation
-        const mlValue = unit === 'L' ? value * 1000 : value;
-        const percentage = (mlValue / dayGoal) * 100;
-        
-        if (percentage >= 100) return t('history.dailyGoalMet');
-        if (percentage >= 80) return t('history.waterGood');
-        if (percentage >= 40) return t('history.waterFair');
-        return t('history.waterLow');
-      };
+      const waters = await WaterStorage.getRecords();
 
-      // Mocks for water and sleep
-      const mocks: HistoryRecord[] = [
-        {
-          id: 'mock-a1',
-          originalId: 'a1',
-          type: 'water',
-          value: 500,
-          valueDisplay: '500',
-          unit: 'ml',
-          date: new Date().toISOString(),
-          subtitle: t('history.waterSub'),
-          status: getWaterStatus(500, 'ml')
-        },
-        {
-          id: 'mock-a2',
-          originalId: 'a2',
-          type: 'water',
-          value: 2.5,
-          valueDisplay: '2.5',
-          unit: 'L',
-          date: new Date(Date.now() - 86400000).toISOString(),
-          subtitle: `${t('history.waterSub')} • ${t('history.totalDay')}`,
-          status: getWaterStatus(2.5, 'L')
-        }
-      ];
+      const waterRecords: HistoryRecord[] = waters.map((w) => ({
+        id: `water-${w.id}`,
+        originalId: w.id,
+        type: 'water',
+        value: w.amount,
+        valueDisplay: `${w.amount}`,
+        unit: 'ml',
+        date: w.date,
+        subtitle: t('history.waterSub'),
+      }));
 
-      setRecords([...weightRecords, ...glucoseRecords, ...mocks].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      setRecords([...weightRecords, ...glucoseRecords, ...waterRecords].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
     } catch (error) {
       console.error('Error loading history:', error);
     } finally {
@@ -173,12 +149,13 @@ export const useHistory = () => {
   const handleDelete = async (record: HistoryRecord) => {
     if (record.type === 'weight') {
       await WeightStorage.deleteRecord(record.originalId);
-      loadData();
     } else if (record.type === 'glucose') {
       await GlucoseStorage.deleteRecord(record.originalId);
-      loadData();
+    } else if (record.type === 'water') {
+      await WaterStorage.deleteRecord(record.originalId);
     }
     setItemToDelete(null);
+    loadData();
   };
 
   return {
