@@ -86,13 +86,24 @@ async function main() {
   }
 
   console.log("✅ Lint realizado com sucesso!\n");
-  
-  // 3. Carregar versão atual
+
+  // 3. Auditoria de segurança
+  console.log("🔒 Rodando auditoria de segurança (npm audit)...");
+  try {
+    run("npm audit", { exitOnError: false });
+    console.log("✅ Nenhuma vulnerabilidade encontrada!\n");
+  } catch (error) {
+    console.error("\n\x1b[31m❌ npm audit encontrou vulnerabilidades. Corrija-as antes de continuar.\x1b[0m");
+    console.error("\x1b[33mDica: tente `npm audit fix` ou `npm audit fix --force` para resolver.\x1b[0m");
+    process.exit(1);
+  }
+
+  // 4. Carregar versão atual
   const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
   const currentVersion = pkg.version;
   console.log(`\n📦 Versão atual: \x1b[32m${currentVersion}\x1b[0m`);
 
-  // 4. Interface para o usuário
+  // 5. Interface para o usuário
   const answers = await inquirer.prompt([
     {
       type: "select",
@@ -129,12 +140,12 @@ async function main() {
     process.exit(0);
   }
 
-  // 5. Atualizar package.json
+  // 6. Atualizar package.json
   pkg.version = nextVersion;
   fs.writeFileSync(packageJsonPath, JSON.stringify(pkg, null, 2) + "\n");
   console.log("✅ package.json atualizado.");
 
-  // 6. Atualizar CHANGELOG.md
+  // 7. Atualizar CHANGELOG.md
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0];
   const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -160,7 +171,7 @@ async function main() {
   }
   console.log("✅ CHANGELOG.md atualizado.");
 
-  // 7. Git Ops
+  // 8. Git Ops
   console.log("\n🚢 Subindo para o GitHub...");
   try {
     const typeMapping = { patch: "fix", minor: "feat", major: "feat!" };

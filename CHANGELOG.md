@@ -11,6 +11,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.3.2] - 2026-03-19 23:39
+- add npm audit in script release
+
 ## [0.3.1] - 2026-03-19 23:35
 - fix release script lint
 
