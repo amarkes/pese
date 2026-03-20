@@ -28,22 +28,51 @@ function run(command, options = {}) {
 }
 
 async function promptMultilineNotes() {
-  const { notes } = await inquirer.prompt([
+  const { summary } = await inquirer.prompt([
     {
-      type: "editor",
-      name: "notes",
-      message: "Descreva as alterações para o CHANGELOG",
-      default: [
-        "feat: descreva a entrega",
-        "",
-        "- detalhe 1",
-        "- detalhe 2",
-      ].join("\n"),
-      validate: (input) => (input.trim() ? true : "As notas não podem ser vazias."),
+      type: "input",
+      name: "summary",
+      message: "Título/resumo do CHANGELOG:",
+      validate: (input) => (input.trim() ? true : "O resumo não pode ser vazio."),
     },
   ]);
 
-  return notes.trim();
+  const bulletItems = [];
+
+  while (true) {
+    const { addBullet } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "addBullet",
+        message:
+          bulletItems.length === 0
+            ? "Deseja adicionar itens em bullet no CHANGELOG?"
+            : "Deseja adicionar outro bullet no CHANGELOG?",
+        default: bulletItems.length === 0,
+      },
+    ]);
+
+    if (!addBullet) {
+      break;
+    }
+
+    const { bullet } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "bullet",
+        message: "Descreva o item:",
+        validate: (input) => (input.trim() ? true : "O item não pode ser vazio."),
+      },
+    ]);
+
+    bulletItems.push(`- ${bullet.trim()}`);
+  }
+
+  if (bulletItems.length === 0) {
+    return summary.trim();
+  }
+
+  return `${summary.trim()}\n\n${bulletItems.join("\n")}`;
 }
 
 function formatChangelogNotes(notes) {
