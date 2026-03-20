@@ -116,6 +116,10 @@ const buildWaterTimes = (count: number, startMinutes: number, endMinutes: number
 };
 
 export const LocalNotificationService = {
+  isModuleAvailable() {
+    return !!LocalNotificationModule;
+  },
+
   validateSettings(settings: AppSettings): NotificationValidationError[] {
     const errors: NotificationValidationError[] = [];
 
@@ -217,12 +221,17 @@ export const LocalNotificationService = {
   },
 
   async syncReminders(reminders: ReminderSpec[]) {
-    const nativeModule = getNativeModule();
-
     if (reminders.length === 0) {
+      if (!LocalNotificationModule) {
+        return { granted: true };
+      }
+
+      const nativeModule = getNativeModule();
       await nativeModule.cancelAllReminders();
       return { granted: true };
     }
+
+    const nativeModule = getNativeModule();
 
     const granted = await requestPermission();
 

@@ -27,13 +27,19 @@ export const useSettings = () => {
   ];
 
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [notificationWarning, setNotificationWarning] = useState<string | null>(null);
   
   useEffect(() => {
     (async () => {
       const data = await SettingsStorage.getSettings();
       setSettings(data);
+      setNotificationWarning(
+        LocalNotificationService.isModuleAvailable()
+          ? null
+          : t('settings.notificationsUnavailableMessage')
+      );
     })();
-  }, []);
+  }, [t]);
 
   const updateSetting = (key: StringSettingKey, value: string) => {
     let finalValue = value;
@@ -132,34 +138,30 @@ export const useSettings = () => {
       waterBody: t('settings.waterReminderBody'),
     });
 
+    if (reminders.length > 0 && !LocalNotificationService.isModuleAvailable()) {
+      setNotificationWarning(t('settings.notificationsUnavailableMessage'));
+      await SettingsStorage.saveSettings(nextSettings);
+      navigation.goBack();
+      return;
+    }
+
     try {
       const result = await LocalNotificationService.syncReminders(reminders);
 
       if (!result.granted) {
-        nextSettings = {
-          ...settings,
-          weightReminderEnabled: false,
-          glucoseRemindersEnabled: false,
-          waterRemindersEnabled: false,
-        };
-        setSettings(nextSettings);
-        Alert.alert(
-          t('settings.notificationsPermissionDeniedTitle'),
-          t('settings.notificationsPermissionDeniedMessage')
+        setNotificationWarning(t('settings.notificationsPermissionDeniedMessage'));
+      } else {
+        setNotificationWarning(
+          LocalNotificationService.isModuleAvailable()
+            ? null
+            : t('settings.notificationsUnavailableMessage')
         );
       }
     } catch (error) {
-      nextSettings = {
-        ...settings,
-        weightReminderEnabled: false,
-        glucoseRemindersEnabled: false,
-        waterRemindersEnabled: false,
-      };
-      setSettings(nextSettings);
-      Alert.alert(
-        t('settings.notificationsUnavailableTitle'),
-        t('settings.notificationsUnavailableMessage')
-      );
+      setNotificationWarning(t('settings.notificationsUnavailableMessage'));
+      if (__DEV__) {
+        console.warn('Failed to sync local notifications:', error);
+      }
     }
 
     await SettingsStorage.saveSettings(nextSettings);
@@ -183,6 +185,7 @@ export const useSettings = () => {
     removeWaterQuickAdd,
     handleSave,
     calculateRecommendedWater,
+    notificationWarning,
     t,
     navigation
   };

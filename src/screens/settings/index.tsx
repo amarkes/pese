@@ -22,6 +22,7 @@ const SettingsScreen: React.FC = () => {
     removeWaterQuickAdd,
     handleSave,
     calculateRecommendedWater,
+    notificationWarning,
     t,
     navigation
   } = useSettings();
@@ -231,6 +232,13 @@ const SettingsScreen: React.FC = () => {
 
         <Card className="mb-5 p-5">
           {renderCardTitle(t('settings.notificationsSection'))}
+          {notificationWarning ? (
+            <View className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 dark:border-red-900/50 dark:bg-red-950/20">
+              <Typography className="font-outfit-medium text-red-600 dark:text-red-400">
+                {notificationWarning}
+              </Typography>
+            </View>
+          ) : null}
           <SettingRow 
              label={t('settings.weightReminder')}
              subtitle={t('settings.weightReminderSubtitle')}

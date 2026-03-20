@@ -28,15 +28,6 @@ function run(command, options = {}) {
 }
 
 async function promptMultilineNotes() {
-  const { summary } = await inquirer.prompt([
-    {
-      type: "input",
-      name: "summary",
-      message: "Título/resumo do CHANGELOG:",
-      validate: (input) => (input.trim() ? true : "O resumo não pode ser vazio."),
-    },
-  ]);
-
   const bulletItems = [];
 
   while (true) {
@@ -48,7 +39,7 @@ async function promptMultilineNotes() {
           bulletItems.length === 0
             ? "Deseja adicionar itens em bullet no CHANGELOG?"
             : "Deseja adicionar outro bullet no CHANGELOG?",
-        default: bulletItems.length === 0,
+        default: true,
       },
     ]);
 
@@ -69,10 +60,10 @@ async function promptMultilineNotes() {
   }
 
   if (bulletItems.length === 0) {
-    return summary.trim();
+    throw new Error("Adicione pelo menos um item ao CHANGELOG.");
   }
 
-  return `${summary.trim()}\n\n${bulletItems.join("\n")}`;
+  return bulletItems.join("\n");
 }
 
 function formatChangelogNotes(notes) {

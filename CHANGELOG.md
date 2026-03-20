@@ -4,8 +4,11 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.10.2] - 2026-03-20 17:44
+- - feat: add notification warning for unavailable local notification module in settings
+
 ## [0.10.1] - 2026-03-20 17:09
-fix
 
 - feat: update release script to improve CHANGELOG entry process with summary and bullet items
 
