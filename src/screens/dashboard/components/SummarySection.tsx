@@ -5,9 +5,53 @@ import { Weight, Droplets, Activity, Zap } from 'lucide-react-native';
 import { Typography } from '@/components/atoms/Typography';
 import { Card } from '@/components/molecules/Card';
 import { IconBox } from '@/components/atoms/IconBox';
+import { useNavigation } from '@react-navigation/native';
 
-export const SummarySection: React.FC = () => {
+interface SummarySectionProps {
+  lastWeight: string;
+  weightDiff: string | null;
+  weightDiffTone: 'positive' | 'negative' | 'neutral';
+  glucoseValue: string;
+  glucoseTargetMin: number;
+  glucoseTargetMax: number;
+  waterConsumed: number;
+  waterGoal: number;
+  waterProgress: number;
+}
+
+export const SummarySection: React.FC<SummarySectionProps> = ({
+  lastWeight,
+  weightDiff,
+  weightDiffTone,
+  glucoseValue,
+  glucoseTargetMin,
+  glucoseTargetMax,
+  waterConsumed,
+  waterGoal,
+  waterProgress,
+}) => {
   const { t } = useTranslation();
+  const navigation = useNavigation<any>();
+
+
+  const weightDiffStyles = {
+    positive: {
+      container: 'bg-red-50 dark:bg-red-950/30',
+      text: 'text-red-500',
+      icon: '#EF4444',
+    },
+    negative: {
+      container: 'bg-emerald-50 dark:bg-emerald-950/30',
+      text: 'text-emerald-500',
+      icon: '#10B981',
+    },
+    neutral: {
+      container: 'bg-slate-100 dark:bg-slate-800',
+      text: 'text-slate-500',
+      icon: '#64748B',
+    },
+  } as const;
+  const currentWeightDiffStyle = weightDiffStyles[weightDiffTone];
 
   return (
     <>
@@ -15,7 +59,9 @@ export const SummarySection: React.FC = () => {
         <Typography variant="h2" className="text-2xl font-outfit-medium">
           {t('dashboard.todaySummary')}
         </Typography>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('History')}
+        >
           <Typography variant="caption" className="text-primary font-outfit-medium">
             {t('common.viewDetails')}
           </Typography>
@@ -32,7 +78,7 @@ export const SummarySection: React.FC = () => {
               </Typography>
               <View className="flex-row items-baseline">
                 <Typography variant="h1" className="text-4xl font-outfit-bold mr-2 text-text dark:text-text-dark">
-                  75.5
+                  {lastWeight}
                 </Typography>
                 <Typography variant="h3" className="text-2xl font-outfit-semibold text-text-secondary dark:text-text-secondary-dark">
                   kg
@@ -40,12 +86,14 @@ export const SummarySection: React.FC = () => {
               </View>
             </View>
           </View>
-          <View className="bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 rounded-2xl flex-row items-center">
-            <Zap size={14} color="#10B981" />
-            <Typography variant="caption" className="text-emerald-500 font-outfit-bold ml-1">
-              -0.2
-            </Typography>
-          </View>
+          {weightDiff ? (
+            <View className={`${currentWeightDiffStyle.container} px-3 py-1.5 rounded-2xl flex-row items-center`}>
+              <Zap size={14} color={currentWeightDiffStyle.icon} />
+              <Typography variant="caption" className={`${currentWeightDiffStyle.text} font-outfit-bold ml-1`}>
+                {weightDiff}
+              </Typography>
+            </View>
+          ) : null}
         </View>
       </Card>
 
@@ -56,11 +104,11 @@ export const SummarySection: React.FC = () => {
             <View className="mt-4">
               <Typography variant="label" className="mb-1">{t('common.glucose')}</Typography>
               <View className="flex-row items-baseline">
-                <Typography variant="h2" className="text-2xl font-outfit-bold mr-1">92</Typography>
+                <Typography variant="h2" className="text-2xl font-outfit-bold mr-1">{glucoseValue}</Typography>
                 <Typography variant="caption" className="text-xs font-outfit-medium">mg/dL</Typography>
               </View>
               <Typography variant="caption" className="text-[10px] text-text-secondary mt-1">
-                {t('dashboard.targetRange', { min: 70, max: 100 })}
+                {t('dashboard.targetRange', { min: glucoseTargetMin, max: glucoseTargetMax })}
               </Typography>
             </View>
           </Card>
@@ -71,11 +119,14 @@ export const SummarySection: React.FC = () => {
             <View className="mt-4">
               <Typography variant="label" className="mb-1">{t('common.water')}</Typography>
               <View className="flex-row items-baseline">
-                <Typography variant="h2" className="text-2xl font-outfit-bold mr-1">1200</Typography>
-                <Typography variant="caption" className="text-xs font-outfit-medium text-text-secondary dark:text-text-secondary-dark">/ 2500 ml</Typography>
+                <Typography variant="h2" className="text-2xl font-outfit-bold mr-1">{waterConsumed}</Typography>
+                <Typography variant="caption" className="text-xs font-outfit-medium text-text-secondary dark:text-text-secondary-dark">/ {waterGoal} ml</Typography>
               </View>
               <View className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full mt-3 overflow-hidden">
-                <View className="h-full bg-blue-500 rounded-full w-[48%]" />
+                <View
+                  className="h-full bg-blue-500 rounded-full"
+                  style={{ width: `${Math.max(0, Math.min(waterProgress, 1)) * 100}%` }}
+                />
               </View>
             </View>
           </Card>

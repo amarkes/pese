@@ -17,6 +17,10 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 
+
+## [0.9.0] - 2026-03-20 13:14
+- ### feat: add dashboard screen with weight, glucose, and water tracking
+
 ## [0.8.0] - 2026-03-19 20:55
 - feat: Add PDF and CSV export functionality for health reports, including a new date range modal and updated navigation.
 

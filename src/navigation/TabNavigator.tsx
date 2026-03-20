@@ -5,7 +5,7 @@ import { LayoutGrid, History, Settings, Plus, BarChart2 } from 'lucide-react-nat
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 
-import DashboardScreen from '@/screens/dashboard/DashboardScreen';
+import DashboardScreen from '@/screens/dashboard';
 import { HistoryScreen } from '@/screens/history';
 import SettingsScreen from '@/screens/settings';
 import { RegisterWeightScreen } from '@/screens/weight';

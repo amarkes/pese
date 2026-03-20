@@ -200,12 +200,6 @@ const SettingsScreen: React.FC = () => {
            onValueChange={(value) => setColorScheme(value ? 'dark' : 'light')}
         />
 
-        <SettingRow 
-           label={t('settings.units')}
-           subtitle={t('settings.unitsSubtitle')}
-           type="link"
-           onPress={() => console.log('Change Units')}
-        />
         <View className="h-6" />
       </ScrollView>
 

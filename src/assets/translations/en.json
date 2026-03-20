@@ -86,10 +86,10 @@
     "msgRisky": "Your glucose is high. Seek evaluation and adjust your routine.",
     "msgDefaultTitle": "Range Orientations",
     "msgDefault": "Keep track of your blood glucose. Click below to view reference values and better understand your current measurements.",
-    "rangeLow": "Values between 36 to 80: Low",
-    "rangeNormal": "Values between 80 to 92: Normal",
-    "rangePreDiabetic": "Values between 93 to 150: Pre-diabetic",
-    "rangeRisky": "Values above 151: Risky",
+    "rangeLow": "Values between {{min}} to {{max}}: Low",
+    "rangeNormal": "Values between {{min}} to {{max}}: Normal",
+    "rangePreDiabetic": "Values between {{min}} to {{max}}: Pre-diabetic",
+    "rangeRisky": "Values between {{min}} to {{max}}: Risky",
     "observations": "Observations (Optional)",
     "observationsPlaceholder": "Ex: Felt slightly dizzy in the morning...",
     "measurementTime": "Measurement Time",
@@ -171,4 +171,3 @@
     "exportCsv": "Export CSV"
   }
 }
-
