@@ -2,24 +2,31 @@
 
 Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## [0.9.0] - 2026-03-20 13:14
-- ### feat: add dashboard screen with weight, glucose, and water tracking
+### feat: add dashboard screen with weight, glucose, and water tracking
+
+- Implemented DashboardScreen to display user health metrics including weight, glucose levels, and water consumption.
+- Added QuickActionsSection, SummarySection, and TrendSection components for better organization of data.
+- Integrated data fetching from WeightStorage, GlucoseStorage, WaterStorage, and SettingsStorage.
+- Introduced loading states and error handling for data fetching.
+
+### feat: create glucose input components for measurement entry
+
+- Developed GlucoseInput component for user to input glucose values.
+- Added ObservationsInput for additional notes related to glucose measurements.
+- Created MeasurementTypeSelector to allow users to specify the type of glucose measurement.
+- Implemented DateTimePickerRow for selecting measurement time.
+
+### feat: add glucose alert and orientation display
+
+- Created GlucoseAlertBox to provide feedback on glucose levels with visual indicators.
+- Implemented OrientationsModal to show glucose ranges based on user settings.
+- Added SaveButton for saving glucose records with conditional styling based on input validity.
+
+### style: enhance UI with consistent theming and responsive design
+
+- Updated styles across components to ensure consistency in dark and light modes.
+- Improved layout and spacing for better user experience on various screen sizes.
 
 ## [0.8.0] - 2026-03-19 20:55
 - feat: Add PDF and CSV export functionality for health reports, including a new date range modal and updated navigation.
