@@ -27,6 +27,44 @@ function run(command, options = {}) {
   }
 }
 
+async function promptMultilineNotes() {
+  const { notes } = await inquirer.prompt([
+    {
+      type: "editor",
+      name: "notes",
+      message: "Descreva as alterações para o CHANGELOG",
+      default: [
+        "feat: descreva a entrega",
+        "",
+        "- detalhe 1",
+        "- detalhe 2",
+      ].join("\n"),
+      validate: (input) => (input.trim() ? true : "As notas não podem ser vazias."),
+    },
+  ]);
+
+  return notes.trim();
+}
+
+function formatChangelogNotes(notes) {
+  const trimmedNotes = notes.trim();
+
+  if (!trimmedNotes.includes("\n")) {
+    return `- ${trimmedNotes}`;
+  }
+
+  return trimmedNotes;
+}
+
+function getCommitSummary(notes) {
+  const firstLine = notes
+    .split("\n")
+    .map(line => line.trim())
+    .find(Boolean) || "chore: release";
+
+  return firstLine.replace(/^[-*]\s*/, "").replace(/"/g, '\\"');
+}
+
 async function main() {
   console.log("\x1b[36m\n--- 🚀 Iniciando Processo de Release ---\n\x1b[0m");
 
@@ -114,14 +152,10 @@ async function main() {
         { name: "✨ Feature (Minor: 0.x.0)", value: "minor" },
         { name: "🚀 Breaking Change (Major: x.0.0)", value: "major" },
       ],
-    },
-    {
-      type: "input",
-      name: "notes",
-      message: "Descreva as alterações para o CHANGELOG:",
-      validate: (input) => (input.trim() ? true : "As notas não podem ser vazias."),
-    },
+    }
   ]);
+
+  const notes = await promptMultilineNotes();
 
   const nextVersion = semver.inc(currentVersion, answers.releaseType);
   console.log(`\n🔔 Próxima versão: \x1b[32m${nextVersion}\x1b[0m`);
@@ -149,7 +183,7 @@ async function main() {
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0];
   const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const newEntry = `\n## [${nextVersion}] - ${dateStr} ${timeStr}\n- ${answers.notes}\n`;
+  const newEntry = `\n## [${nextVersion}] - ${dateStr} ${timeStr}\n${formatChangelogNotes(notes)}\n`;
 
   if (!fs.existsSync(changelogPath)) {
     fs.writeFileSync(
@@ -176,9 +210,10 @@ async function main() {
   try {
     const typeMapping = { patch: "fix", minor: "feat", major: "feat!" };
     const commitType = typeMapping[answers.releaseType] || "chore";
+    const commitSummary = getCommitSummary(notes);
 
     run("git add .", { exitOnError: false });
-    run(`git commit -m "${commitType}(v${nextVersion}): ${answers.notes}"`, { exitOnError: false });
+    run(`git commit -m "${commitType}(v${nextVersion}): ${commitSummary}"`, { exitOnError: false });
     run(`git tag v${nextVersion}`, { exitOnError: false });
     run("git push origin HEAD", { exitOnError: false });
     run("git push origin --tags", { exitOnError: false });

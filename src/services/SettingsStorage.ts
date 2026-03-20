@@ -4,6 +4,17 @@ export interface AppSettings {
   weightGoal: string;
   birthDate: string;
   height: string;
+  weightReminderEnabled: boolean;
+  weightReminderTime: string;
+  glucoseRemindersEnabled: boolean;
+  glucoseFastingTime: string;
+  glucosePreMealTime: string;
+  glucosePostMealTime: string;
+  glucoseRandomTime: string;
+  waterRemindersEnabled: boolean;
+  waterReminderCount: string;
+  waterReminderStartTime: string;
+  waterReminderEndTime: string;
   glucoseLowMin: string;
   glucoseLowMax: string;
   glucoseNormalMin: string;
@@ -20,6 +31,17 @@ export const DEFAULT_SETTINGS: AppSettings = {
   weightGoal: '75',
   birthDate: '',
   height: '170',
+  weightReminderEnabled: false,
+  weightReminderTime: '09:00',
+  glucoseRemindersEnabled: false,
+  glucoseFastingTime: '07:00',
+  glucosePreMealTime: '11:30',
+  glucosePostMealTime: '14:00',
+  glucoseRandomTime: '20:00',
+  waterRemindersEnabled: false,
+  waterReminderCount: '7',
+  waterReminderStartTime: '08:00',
+  waterReminderEndTime: '22:00',
   glucoseLowMin: '36',
   glucoseLowMax: '80',
   glucoseNormalMin: '81',

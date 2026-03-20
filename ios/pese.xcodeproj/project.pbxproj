@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BDF8F9024C24C2BAE45A001 /* LocalNotificationModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BDF8F8F24C24C2BAE45A001 /* LocalNotificationModule.m */; };
 		0070F4794DCB43AD82C30D8E /* Outfit-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7EDDA768F7454AC496E82D37 /* Outfit-ExtraBold.ttf */; };
 		08FD1866F14846AB941424AC /* Outfit-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E8FA33D558A459E929A3759 /* Outfit-Light.ttf */; };
 		096C0E33F1DF46B283FFF278 /* Outfit-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6306F6DC51284C0FA762A4D9 /* Outfit-Regular.ttf */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		002394D200FC4980B27301C0 /* Outfit-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Outfit-Medium.ttf"; path = "../src/assets/fonts/Outfit-Medium.ttf"; sourceTree = "<group>"; };
+		2BDF8F8F24C24C2BAE45A001 /* LocalNotificationModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationModule.m; path = pese/LocalNotificationModule.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* pese.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pese.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = pese/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = pese/Info.plist; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			children = (
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
+				2BDF8F8F24C24C2BAE45A001 /* LocalNotificationModule.m */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
@@ -291,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BDF8F9024C24C2BAE45A001 /* LocalNotificationModule.m in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

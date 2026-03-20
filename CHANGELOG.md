@@ -2,6 +2,22 @@
 
 Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
+
+## [0.10.0] - 2026-03-20 17:06
+feat: implement local notification system for reminders
+
+- Added LocalNotificationService to handle scheduling and validation of reminders.
+- Integrated notification permissions for Android and iOS.
+- Updated AppSettings to include new reminder settings for weight, glucose, and water intake.
+- Enhanced useSettings hook to manage new settings and validate them before saving.
+- Created LocalNotificationModule for native notification handling on both Android and iOS.
+- Implemented LocalNotificationScheduler to manage reminder scheduling and notifications.
+- Updated SettingsScreen to include UI for managing reminder settings.
+- Added LocalNotificationBootReceiver to reschedule notifications on device boot.feat: descreva a entrega
+
+- detalhe 1
+- detalhe 2
+
 ## [0.9.0] - 2026-03-20 13:14
 ### feat: add dashboard screen with weight, glucose, and water tracking
 
