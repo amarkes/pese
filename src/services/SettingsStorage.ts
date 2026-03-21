@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface AppSettings {
+  language: 'pt-BR' | 'en' | 'es';
+  themeMode: 'light' | 'dark';
+  notificationSound: string;
   weightGoal: string;
   birthDate: string;
   height: string;
@@ -28,6 +31,9 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
+  language: 'pt-BR',
+  themeMode: 'light',
+  notificationSound: 'default',
   weightGoal: '75',
   birthDate: '',
   height: '170',

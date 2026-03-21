@@ -68,4 +68,28 @@ export const WeightStorage = {
       throw e;
     }
   },
+
+  async importRecords(recordsToImport: Array<Omit<WeightRecord, 'id'>>): Promise<number> {
+    if (recordsToImport.length === 0) {
+      return 0;
+    }
+
+    try {
+      const records = await this.getRecords();
+      const importedRecords: WeightRecord[] = recordsToImport.map((record, index) => ({
+        id: `weight-import-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}`,
+        ...record,
+      }));
+
+      const updatedRecords = [...importedRecords, ...records].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      await AsyncStorage.setItem(STORAGE_KEYS.WEIGHTS, JSON.stringify(updatedRecords));
+      return importedRecords.length;
+    } catch (e) {
+      console.error('Error importing weight records:', e);
+      throw e;
+    }
+  },
 };

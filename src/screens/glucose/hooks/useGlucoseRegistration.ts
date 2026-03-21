@@ -3,6 +3,7 @@ import { TextInput } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
 import { GlucoseStorage, MeasurementType } from '@/services/GlucoseStorage';
+import { LocalNotificationService } from '@/services/LocalNotificationService';
 
 export const useGlucoseRegistration = () => {
   const { t, i18n } = useTranslation();
@@ -55,6 +56,15 @@ export const useGlucoseRegistration = () => {
       } else {
         await GlucoseStorage.saveRecord(glucoseNum, measurementType, observations, date.toISOString());
       }
+
+      try {
+        await LocalNotificationService.syncConfiguredReminders(t, i18n.language);
+      } catch (error) {
+        if (__DEV__) {
+          console.warn('Failed to refresh local notifications after glucose save:', error);
+        }
+      }
+
       navigation.goBack();
     }
   };
@@ -65,8 +75,15 @@ export const useGlucoseRegistration = () => {
                     d.getMonth() === today.getMonth() && 
                     d.getFullYear() === today.getFullYear();
     
-    const formattedDate = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const formattedTime = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const formattedDate = d.toLocaleDateString(i18n.language, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const formattedTime = d.toLocaleTimeString(i18n.language, {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     
     if (isToday) {
       return `${t('common.today')}, ${formattedTime}`;

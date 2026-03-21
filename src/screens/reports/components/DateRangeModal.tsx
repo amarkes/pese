@@ -22,7 +22,7 @@ interface DateRangeModalProps {
 type PickerField = 'start' | 'end' | null;
 
 export const DateRangeModal = ({ visible, onClose, onConfirm }: DateRangeModalProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -35,7 +35,7 @@ export const DateRangeModal = ({ visible, onClose, onConfirm }: DateRangeModalPr
   const [activeField, setActiveField] = useState<PickerField>(null);
 
   const fmt = (d: Date) =>
-    d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    d.toLocaleDateString(i18n.language, { day: '2-digit', month: '2-digit', year: 'numeric' });
 
   const handleStartChange = (_: any, date?: Date) => {
     if (Platform.OS === 'android') setActiveField(null);
@@ -77,9 +77,9 @@ export const DateRangeModal = ({ visible, onClose, onConfirm }: DateRangeModalPr
           <View style={[styles.handle, { backgroundColor: border }]} />
 
           {/* Header */}
-          <View style={styles.header}>
+            <View style={styles.header}>
             <Typography className="text-lg font-outfit-bold" style={{ color: text }}>
-              {t('reports.customRange', 'Período Personalizado')}
+              {t('reports.customRange')}
             </Typography>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
               <X size={20} color={sub} />
@@ -95,7 +95,7 @@ export const DateRangeModal = ({ visible, onClose, onConfirm }: DateRangeModalPr
                 </View>
                 <View style={styles.dateInfo}>
                   <Typography style={[styles.labelText, { color: sub }]}>
-                    {t('reports.startDate', 'Data Inicial')}
+                    {t('reports.startDate')}
                   </Typography>
                   <Typography className="font-outfit-bold" style={[styles.dateValue, { color: text }]}>
                     {fmt(startDate)}
@@ -134,7 +134,7 @@ export const DateRangeModal = ({ visible, onClose, onConfirm }: DateRangeModalPr
                 </View>
                 <View style={styles.dateInfo}>
                   <Typography style={[styles.labelText, { color: sub }]}>
-                    {t('reports.endDate', 'Data Final')}
+                    {t('reports.endDate')}
                   </Typography>
                   <Typography className="font-outfit-bold" style={[styles.dateValue, { color: text }]}>
                     {fmt(endDate)}
@@ -176,7 +176,7 @@ export const DateRangeModal = ({ visible, onClose, onConfirm }: DateRangeModalPr
             {/* Confirm Button */}
             <TouchableOpacity style={styles.confirmBtn} onPress={handleConfirm}>
               <Typography className="font-outfit-bold" style={styles.confirmText}>
-                {t('reports.applyRange', 'Aplicar Período')}
+                {t('reports.applyRange')}
               </Typography>
             </TouchableOpacity>
           </ScrollView>

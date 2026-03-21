@@ -3,7 +3,11 @@
 Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
-
+## [0.11.0] - 2026-03-21 12:47
+- feat(settings): add settings hub screen
+- feat(data-transfer): add CSV import/export and downloadable templates
+- feat(content): add help, policy, and new translations
+- feat(notifications): improve local reminder sound, icon, and deep-link routin
 
 ## [0.10.2] - 2026-03-20 17:44
 - - feat: add notification warning for unavailable local notification module in settings

@@ -21,7 +21,7 @@ export const ExportActions = ({ stats, dataIncluded }: ExportActionsProps) => {
       await exportPDF({ stats, dataIncluded });
     } catch (e: any) {
       if (!e?.message?.includes('User did not share')) {
-        Alert.alert('Erro', 'Não foi possível exportar o PDF.');
+        Alert.alert(t('reports.exportErrorTitle'), t('reports.exportPdfError'));
       }
     } finally {
       setLoadingPdf(false);
@@ -34,7 +34,7 @@ export const ExportActions = ({ stats, dataIncluded }: ExportActionsProps) => {
       await exportCSV({ stats, dataIncluded });
     } catch (e: any) {
       if (!e?.message?.includes('User did not share')) {
-        Alert.alert('Erro', 'Não foi possível exportar o CSV.');
+        Alert.alert(t('reports.exportErrorTitle'), t('reports.exportCsvError'));
       }
     } finally {
       setLoadingCsv(false);

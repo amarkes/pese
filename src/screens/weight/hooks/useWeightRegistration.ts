@@ -3,6 +3,7 @@ import { TextInput } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useFocusEffect, useRoute } from '@react-navigation/native';
 import { WeightStorage, WeightRecord } from '@/services/WeightStorage';
+import { LocalNotificationService } from '@/services/LocalNotificationService';
 
 export const useWeightRegistration = () => {
   const { t, i18n } = useTranslation();
@@ -55,6 +56,15 @@ export const useWeightRegistration = () => {
       } else {
         await WeightStorage.saveRecord(weightNum, date.toISOString());
       }
+
+      try {
+        await LocalNotificationService.syncConfiguredReminders(t, i18n.language);
+      } catch (error) {
+        if (__DEV__) {
+          console.warn('Failed to refresh local notifications after weight save:', error);
+        }
+      }
+
       navigation.goBack();
     }
   };
@@ -69,12 +79,16 @@ export const useWeightRegistration = () => {
                     d.getMonth() === today.getMonth() && 
                     d.getFullYear() === today.getFullYear();
     
-    const formatted = d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
+    const formatted = d.toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' });
     return isToday ? `${t('common.today')}, ${formatted}` : formatted;
   };
 
   const formatTimeLabel = (d: Date) => {
-    return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: true }).toUpperCase();
+    return d.toLocaleTimeString(i18n.language, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }).toUpperCase();
   };
 
   return {

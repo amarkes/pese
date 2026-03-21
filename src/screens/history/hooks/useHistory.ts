@@ -26,7 +26,7 @@ export interface HistoryRecord {
 export type PeriodType = 'day' | 'week' | 'month' | 'custom';
 
 export const useHistory = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeFilter, setActiveFilter] = useState<HistoryItemType | 'all'>('all');
   const [period, setPeriod] = useState<PeriodType>('month');
   const [records, setRecords] = useState<HistoryRecord[]>([]);
@@ -126,14 +126,20 @@ export const useHistory = () => {
       
       const isToday = d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
       const isYesterday = d.getDate() === yesterday.getDate() && d.getMonth() === yesterday.getMonth() && d.getFullYear() === yesterday.getFullYear();
-      const fullDate = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' }).toUpperCase();
+      const fullDate = d.toLocaleDateString(i18n.language, {
+        day: '2-digit',
+        month: 'long',
+      }).toUpperCase();
 
       if (isToday) {
         groupKey = `${t('history.today')}, ${fullDate}`;
       } else if (isYesterday) {
         groupKey = `${t('history.yesterday')}, ${fullDate}`;
       } else {
-        groupKey = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+        groupKey = d.toLocaleDateString(i18n.language, {
+          month: 'long',
+          year: 'numeric',
+        }).toUpperCase();
       }
 
       if (!groups[groupKey]) groups[groupKey] = [];
@@ -144,7 +150,7 @@ export const useHistory = () => {
       title: key,
       data: groups[key]
     }));
-  }, [filteredRecords, t]);
+  }, [filteredRecords, i18n.language, t]);
 
   const handleDelete = async (record: HistoryRecord) => {
     if (record.type === 'weight') {

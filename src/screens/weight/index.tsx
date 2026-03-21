@@ -93,7 +93,7 @@ export const RegisterWeightScreen: React.FC = () => {
                         <Typography className="text-blue-500 font-outfit-semibold">{t('common.cancel')}</Typography>
                       </TouchableOpacity>
                       <Typography className="font-outfit-bold text-slate-800 dark:text-white">
-                        {t('weight.selectDate') || 'Selecionar Data'}
+                        {t('weight.selectDate')}
                       </Typography>
                       <TouchableOpacity onPress={() => setShowDatePicker(false)}>
                         <Typography className="text-blue-500 font-outfit-bold">{t('common.done')}</Typography>
@@ -135,7 +135,7 @@ export const RegisterWeightScreen: React.FC = () => {
                         <Typography className="text-blue-500 font-outfit-semibold">{t('common.cancel')}</Typography>
                       </TouchableOpacity>
                       <Typography className="font-outfit-bold text-slate-800 dark:text-white">
-                        {t('weight.selectTime') || 'Selecionar Hora'}
+                        {t('weight.selectTime')}
                       </Typography>
                       <TouchableOpacity onPress={() => setShowTimePicker(false)}>
                         <Typography className="text-blue-500 font-outfit-bold">{t('common.done')}</Typography>

@@ -6,6 +6,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -13,16 +16,20 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Calendar
 
+private const val DEFAULT_SOUND = "default"
+private const val SILENT_SOUND = "silent"
+
 data class ScheduledReminder(
   val id: String,
   val title: String,
   val body: String,
   val hour: Int,
-  val minute: Int
+  val minute: Int,
+  val sound: String = DEFAULT_SOUND
 )
 
 object LocalNotificationScheduler {
-  private const val CHANNEL_ID = "pese_daily_reminders"
+  private const val CHANNEL_PREFIX = "pese_daily_reminders"
   private const val CHANNEL_NAME = "Daily reminders"
   private const val CHANNEL_DESCRIPTION = "Local reminders to log health data"
   private const val PREFS_NAME = "pese_local_notifications"
@@ -36,7 +43,7 @@ object LocalNotificationScheduler {
   fun scheduleAll(context: Context, reminders: List<ScheduledReminder>) {
     cancelAll(context, clearStored = false)
     saveReminders(context, reminders)
-    createNotificationChannel(context)
+    reminders.map { it.sound }.distinct().forEach { createNotificationChannel(context, it) }
     reminders.forEach { scheduleReminder(context, it) }
   }
 
@@ -57,7 +64,7 @@ object LocalNotificationScheduler {
   }
 
   fun rescheduleFromPreferences(context: Context) {
-    createNotificationChannel(context)
+    loadReminders(context).map { it.sound }.distinct().forEach { createNotificationChannel(context, it) }
     loadReminders(context).forEach { scheduleReminder(context, it) }
   }
 
@@ -118,13 +125,13 @@ object LocalNotificationScheduler {
   }
 
   private fun showNotification(context: Context, reminder: ScheduledReminder) {
-    createNotificationChannel(context)
+    createNotificationChannel(context, reminder.sound)
+    val channelId = channelIdFor(reminder.sound)
 
     val launchIntent =
-      context.packageManager.getLaunchIntentForPackage(context.packageName)
-        ?: Intent(context, MainActivity::class.java).apply {
-          addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
+      Intent(Intent.ACTION_VIEW, Uri.parse(deepLinkFor(reminder.id)), context, MainActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+      }
 
     val contentIntent = PendingIntent.getActivity(
       context,
@@ -133,15 +140,21 @@ object LocalNotificationScheduler {
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-      .setSmallIcon(R.mipmap.ic_launcher)
+    val notificationBuilder = NotificationCompat.Builder(context, channelId)
+      .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(reminder.title)
       .setContentText(reminder.body)
       .setStyle(NotificationCompat.BigTextStyle().bigText(reminder.body))
       .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+      .setColor(0xFF2563EB.toInt())
       .setAutoCancel(true)
       .setContentIntent(contentIntent)
-      .build()
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      applyLegacySound(notificationBuilder, reminder.sound)
+    }
+
+    val notification = notificationBuilder.build()
 
     NotificationManagerCompat
       .from(context)
@@ -158,6 +171,7 @@ object LocalNotificationScheduler {
             put("body", reminder.body)
             put("hour", reminder.hour)
             put("minute", reminder.minute)
+            put("sound", reminder.sound)
           }
         )
       }
@@ -185,7 +199,8 @@ object LocalNotificationScheduler {
           title = item.getString("title"),
           body = item.getString("body"),
           hour = item.getInt("hour"),
-          minute = item.getInt("minute")
+          minute = item.getInt("minute"),
+          sound = item.optString("sound", DEFAULT_SOUND)
         )
       }
     } catch (error: Exception) {
@@ -197,7 +212,36 @@ object LocalNotificationScheduler {
 
   private fun notificationIdFor(id: String) = id.hashCode()
 
-  private fun createNotificationChannel(context: Context) {
+  private fun channelIdFor(sound: String) = "${CHANNEL_PREFIX}_${sound.hashCode()}"
+
+  private fun soundUriFor(sound: String): Uri? =
+    when (sound) {
+      SILENT_SOUND -> null
+      DEFAULT_SOUND -> RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+      else -> Uri.parse(sound)
+    }
+
+  private fun deepLinkFor(reminderId: String): String =
+    when {
+      reminderId == "weight-daily" -> "pese://register/weight"
+      reminderId.startsWith("glucose-") -> "pese://register/glucose"
+      reminderId.startsWith("water-") -> "pese://register/water"
+      else -> "pese://"
+    }
+
+  private fun applyLegacySound(
+    builder: NotificationCompat.Builder,
+    sound: String
+  ) {
+    val soundUri = soundUriFor(sound)
+    if (soundUri != null) {
+      builder.setSound(soundUri)
+    } else {
+      builder.setSilent(true)
+    }
+  }
+
+  private fun createNotificationChannel(context: Context, sound: String) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
       return
     }
@@ -206,11 +250,23 @@ object LocalNotificationScheduler {
       context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     val channel = NotificationChannel(
-      CHANNEL_ID,
+      channelIdFor(sound),
       CHANNEL_NAME,
       NotificationManager.IMPORTANCE_DEFAULT
     ).apply {
       description = CHANNEL_DESCRIPTION
+
+      val soundUri = soundUriFor(sound)
+      if (soundUri != null) {
+        val audioAttributes = AudioAttributes.Builder()
+          .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+          .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+          .build()
+        setSound(soundUri, audioAttributes)
+      } else {
+        setSound(null, null)
+        enableVibration(false)
+      }
     }
 
     notificationManager.createNotificationChannel(channel)

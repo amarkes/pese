@@ -82,5 +82,29 @@ export const WaterStorage = {
       console.error('Error deleting water record:', error);
       throw error;
     }
-  }
+  },
+
+  importRecords: async (recordsToImport: Array<Omit<WaterRecord, 'id'>>): Promise<number> => {
+    if (recordsToImport.length === 0) {
+      return 0;
+    }
+
+    try {
+      const records = await WaterStorage.getRecords();
+      const importedRecords: WaterRecord[] = recordsToImport.map((record, index) => ({
+        id: `water-import-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}`,
+        ...record,
+      }));
+
+      const updatedRecords = [...importedRecords, ...records].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      await AsyncStorage.setItem(WATER_STORAGE_KEY, JSON.stringify(updatedRecords));
+      return importedRecords.length;
+    } catch (error) {
+      console.error('Error importing water records:', error);
+      throw error;
+    }
+  },
 };

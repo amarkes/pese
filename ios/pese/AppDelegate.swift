@@ -4,6 +4,9 @@ import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import UserNotifications
 
+private let peseReminderPrefix = "pese.reminder."
+private let pendingNotificationUrlKey = "pese.pendingNotificationUrl"
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
   var window: UIWindow?
@@ -44,6 +47,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     } else {
       completionHandler([.alert, .sound, .badge])
     }
+  }
+
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    let identifier = response.notification.request.identifier
+
+    if let url = deepLink(for: identifier) {
+      UserDefaults.standard.set(url, forKey: pendingNotificationUrlKey)
+    }
+
+    completionHandler()
+  }
+
+  func application(
+    _ app: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+  ) -> Bool {
+    RCTLinkingManager.application(app, open: url, options: options)
+  }
+
+  func application(
+    _ application: UIApplication,
+    continue userActivity: NSUserActivity,
+    restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
+  ) -> Bool {
+    RCTLinkingManager.application(application, continue: userActivity, restorationHandler: restorationHandler)
+  }
+
+  private func deepLink(for identifier: String) -> String? {
+    guard identifier.hasPrefix(peseReminderPrefix) else {
+      return nil
+    }
+
+    let reminderId = String(identifier.dropFirst(peseReminderPrefix.count))
+
+    if reminderId == "weight-daily" {
+      return "pese://register/weight"
+    }
+
+    if reminderId.hasPrefix("glucose-") {
+      return "pese://register/glucose"
+    }
+
+    if reminderId.hasPrefix("water-") {
+      return "pese://register/water"
+    }
+
+    return nil
   }
 }
 

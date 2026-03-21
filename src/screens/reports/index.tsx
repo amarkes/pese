@@ -16,11 +16,12 @@ import { DateRangeModal } from './components/DateRangeModal';
 
 type PeriodMode = 'last30' | 'thisMonth' | 'custom';
 
-const fmt = (d: Date) =>
-  d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-
 export const ReportsScreen = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const fmt = useCallback(
+    (d: Date) => d.toLocaleDateString(i18n.language, { day: '2-digit', month: '2-digit' }),
+    [i18n.language]
+  );
 
   // Period state
   const [periodMode, setPeriodMode] = useState<PeriodMode>('last30');
@@ -89,7 +90,7 @@ export const ReportsScreen = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [getDateRange]);
+  }, [fmt, getDateRange]);
 
   useEffect(() => {
     loadData();

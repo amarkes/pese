@@ -122,7 +122,7 @@ export const RegisterWaterScreen: React.FC = () => {
             {todayRecords.length === 0 && (
               <View className="items-center py-6">
                 <Typography className="text-slate-400 dark:text-slate-500 font-outfit">
-                  Nenhum registro ainda hoje.
+                  {t('water.emptyToday')}
                 </Typography>
               </View>
             )}

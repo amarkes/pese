@@ -7,7 +7,7 @@ import { useColorScheme } from 'nativewind';
 
 import DashboardScreen from '@/screens/dashboard';
 import { HistoryScreen } from '@/screens/history';
-import SettingsScreen from '@/screens/settings';
+import SettingsMenuScreen from '@/screens/settings-menu';
 import { RegisterWeightScreen } from '@/screens/weight';
 import { ReportsScreen } from '@/screens/reports';
 
@@ -80,7 +80,7 @@ export const TabNavigator = () => {
         name="Reports"
         component={ReportsScreen}
         options={{
-          tabBarLabel: t('tabs.reports', 'Relatórios'),
+          tabBarLabel: t('tabs.reports'),
           tabBarIcon: ReportsIcon,
         }}
       />
@@ -121,7 +121,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen} // Also putting Settings here as in the image
+        component={SettingsMenuScreen}
         options={{
           tabBarLabel: t('tabs.settings'),
           tabBarIcon: SettingsIcon,

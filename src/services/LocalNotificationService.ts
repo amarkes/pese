@@ -1,5 +1,8 @@
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
-import { AppSettings } from './SettingsStorage';
+import { AppSettings, SettingsStorage } from './SettingsStorage';
+import { GlucoseStorage, MeasurementType } from './GlucoseStorage';
+import { WaterStorage } from './WaterStorage';
+import { WeightStorage } from './WeightStorage';
 
 export interface ReminderSpec {
   id: string;
@@ -7,6 +10,12 @@ export interface ReminderSpec {
   body: string;
   hour: number;
   minute: number;
+  sound: string;
+}
+
+export interface NotificationSoundOption {
+  id: string;
+  name: string;
 }
 
 export type NotificationValidationError =
@@ -33,10 +42,13 @@ interface NotificationTexts {
   waterBody: string;
 }
 
+type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
+
 interface LocalNotificationNativeModule {
   requestPermission?: () => Promise<boolean>;
   scheduleReminders: (reminders: ReminderSpec[]) => Promise<void>;
   cancelAllReminders: () => Promise<void>;
+  getAvailableSounds?: () => Promise<NotificationSoundOption[]>;
 }
 
 const { LocalNotificationModule } = NativeModules as {
@@ -50,6 +62,9 @@ const getNativeModule = () => {
 
   return LocalNotificationModule;
 };
+
+const DEFAULT_SOUND_ID = 'default';
+const SILENT_SOUND_ID = 'silent';
 
 const requestAndroidPermission = async () => {
   if (Platform.Version < 33) {
@@ -115,6 +130,88 @@ const buildWaterTimes = (count: number, startMinutes: number, endMinutes: number
   });
 };
 
+const getRecommendedWaterGoal = (currentWeight: number | null, weightGoal: string) => {
+  const baseWeight =
+    currentWeight ??
+    parseFloat(weightGoal.replace(',', '.'));
+
+  if (!isNaN(baseWeight) && baseWeight > 0) {
+    return Math.round(baseWeight * 35);
+  }
+
+  return 2500;
+};
+
+const formatWeight = (value: number, locale: string) =>
+  value.toLocaleString(locale, {
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
+    maximumFractionDigits: 1,
+  });
+
+const formatInteger = (value: number, locale: string) => value.toLocaleString(locale);
+
+const getLatestGlucoseByType = async () => {
+  const records = await GlucoseStorage.getRecords();
+
+  return records.reduce<Partial<Record<MeasurementType, number>>>((acc, record) => {
+    if (acc[record.measurementType] == null) {
+      acc[record.measurementType] = record.glucose;
+    }
+
+    return acc;
+  }, {});
+};
+
+const buildNotificationTexts = async (
+  settings: AppSettings,
+  t: TranslateFn,
+  locale: string
+): Promise<NotificationTexts> => {
+  const [lastWeightRecord, latestGlucoseByType, todayWaterRecords] = await Promise.all([
+    WeightStorage.getLastRecord(),
+    getLatestGlucoseByType(),
+    WaterStorage.getRecordsByDate(new Date().toISOString()),
+  ]);
+
+  const dailyGoalSetting = parseInt(settings.waterGoal, 10);
+  const dailyGoal =
+    dailyGoalSetting > 0
+      ? dailyGoalSetting
+      : getRecommendedWaterGoal(lastWeightRecord?.weight ?? null, settings.weightGoal);
+  const consumedToday = todayWaterRecords.reduce((total, record) => total + record.amount, 0);
+  const remainingWater = Math.max(dailyGoal - consumedToday, 0);
+
+  return {
+    weightTitle: t('settings.weightReminderTitle'),
+    weightBody: lastWeightRecord
+      ? t('settings.weightReminderBodyWithLast', { weight: formatWeight(lastWeightRecord.weight, locale) })
+      : t('settings.weightReminderBodyWithoutLast'),
+    glucoseFastingTitle: t('settings.glucoseFastingReminderTitle'),
+    glucoseFastingBody: latestGlucoseByType.fasting != null
+      ? t('settings.glucoseFastingReminderBodyWithLast', { value: formatInteger(latestGlucoseByType.fasting, locale) })
+      : t('settings.glucoseFastingReminderBodyWithoutLast'),
+    glucosePreMealTitle: t('settings.glucosePreMealReminderTitle'),
+    glucosePreMealBody: latestGlucoseByType.preMeal != null
+      ? t('settings.glucosePreMealReminderBodyWithLast', { value: formatInteger(latestGlucoseByType.preMeal, locale) })
+      : t('settings.glucosePreMealReminderBodyWithoutLast'),
+    glucosePostMealTitle: t('settings.glucosePostMealReminderTitle'),
+    glucosePostMealBody: latestGlucoseByType.postMeal != null
+      ? t('settings.glucosePostMealReminderBodyWithLast', { value: formatInteger(latestGlucoseByType.postMeal, locale) })
+      : t('settings.glucosePostMealReminderBodyWithoutLast'),
+    glucoseRandomTitle: t('settings.glucoseRandomReminderTitle'),
+    glucoseRandomBody: latestGlucoseByType.random != null
+      ? t('settings.glucoseRandomReminderBodyWithLast', { value: formatInteger(latestGlucoseByType.random, locale) })
+      : t('settings.glucoseRandomReminderBodyWithoutLast'),
+    waterTitle: t('settings.waterReminderTitle'),
+    waterBody: remainingWater > 0
+      ? t('settings.waterReminderBodyWithRemaining', {
+          remaining: formatInteger(remainingWater, locale),
+          goal: formatInteger(dailyGoal, locale),
+        })
+      : t('settings.waterReminderBodyGoalMet', { goal: formatInteger(dailyGoal, locale) }),
+  };
+};
+
 export const LocalNotificationService = {
   isModuleAvailable() {
     return !!LocalNotificationModule;
@@ -171,6 +268,7 @@ export const LocalNotificationService = {
           body: texts.weightBody,
           hour: time.hour,
           minute: time.minute,
+          sound: settings.notificationSound,
         });
       }
     }
@@ -192,6 +290,7 @@ export const LocalNotificationService = {
             body,
             hour: time.hour,
             minute: time.minute,
+            sound: settings.notificationSound,
           });
         }
       });
@@ -212,6 +311,7 @@ export const LocalNotificationService = {
             body: texts.waterBody,
             hour: time.hour,
             minute: time.minute,
+            sound: settings.notificationSound,
           });
         });
       }
@@ -242,5 +342,47 @@ export const LocalNotificationService = {
 
     await nativeModule.scheduleReminders(reminders);
     return { granted: true };
+  },
+
+  async getAvailableSounds(t: TranslateFn): Promise<NotificationSoundOption[]> {
+    const baseOptions: NotificationSoundOption[] = [
+      { id: DEFAULT_SOUND_ID, name: t('settings.notificationSoundDefault') },
+      { id: SILENT_SOUND_ID, name: t('settings.notificationSoundSilent') },
+    ];
+
+    if (!LocalNotificationModule?.getAvailableSounds) {
+      return baseOptions;
+    }
+
+    try {
+      const nativeSounds = await LocalNotificationModule.getAvailableSounds();
+      const seen = new Set(baseOptions.map(option => option.id));
+      const uniqueNativeSounds = nativeSounds
+        .filter(option => option?.id && option?.name && !seen.has(option.id))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      return [...baseOptions, ...uniqueNativeSounds];
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('Failed to load notification sounds:', error);
+      }
+      return baseOptions;
+    }
+  },
+
+  async syncConfiguredReminders(t: TranslateFn, locale: string = 'pt-BR') {
+    const settings = await SettingsStorage.getSettings();
+    const texts = await buildNotificationTexts(settings, t, locale);
+    const reminders = this.buildReminders(settings, texts);
+
+    if (reminders.length === 0) {
+      return this.syncReminders([]);
+    }
+
+    if (!this.isModuleAvailable()) {
+      return { granted: false };
+    }
+
+    return this.syncReminders(reminders);
   },
 };

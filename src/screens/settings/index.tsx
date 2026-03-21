@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { ScrollView, View, TouchableOpacity, TextInput, StyleSheet, Modal, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronLeft, Save, Plus, X } from 'lucide-react-native';
+import { ChevronLeft, Save, Plus, X, Check } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { Typography } from '@/components/atoms/Typography';
 import { Card } from '@/components/molecules/Card';
@@ -17,19 +17,32 @@ const SettingsScreen: React.FC = () => {
     settings,
     updateSetting,
     updateBooleanSetting,
+    updateLanguage,
+    updateThemeMode,
     updateWaterQuickAdd,
     addWaterQuickAdd,
     removeWaterQuickAdd,
     handleSave,
     calculateRecommendedWater,
     notificationWarning,
+    notificationSounds,
+    isLoadingNotificationSounds,
+    updateNotificationSound,
     t,
     navigation
   } = useSettings();
+  const [showSoundPicker, setShowSoundPicker] = React.useState(false);
 
   type StringSettingKey = {
     [K in keyof AppSettings]: AppSettings[K] extends string ? K : never;
   }[keyof AppSettings];
+
+  const supportedLanguages: AppSettings['language'][] = ['pt-BR', 'en', 'es'];
+  const languageLabelKeys: Record<AppSettings['language'], string> = {
+    'pt-BR': 'settings.languageOptionPtBR',
+    en: 'settings.languageOptionEn',
+    es: 'settings.languageOptionEs',
+  };
 
   const renderInput = (labelKey: string, valueKey: StringSettingKey, unit?: string, placeholder?: string) => (
     <View className="mb-6">
@@ -63,7 +76,9 @@ const SettingsScreen: React.FC = () => {
       </Typography>
       <View className="flex-row gap-4">
         <View className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex-row items-center px-4 h-14">
-          <Typography className="mr-2 text-slate-400 font-outfit text-xs uppercase tracking-wider">Mín</Typography>
+          <Typography className="mr-2 text-slate-400 font-outfit text-xs uppercase tracking-wider">
+            {t('settings.minimumShort')}
+          </Typography>
           <TextInput
             value={settings[minKey]}
             onChangeText={val => updateSetting(minKey, val)}
@@ -74,7 +89,9 @@ const SettingsScreen: React.FC = () => {
           />
         </View>
         <View className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl flex-row items-center px-4 h-14">
-          <Typography className="mr-2 text-slate-400 font-outfit text-xs uppercase tracking-wider">Máx</Typography>
+          <Typography className="mr-2 text-slate-400 font-outfit text-xs uppercase tracking-wider">
+            {t('settings.maximumShort')}
+          </Typography>
           <TextInput
             value={settings[maxKey]}
             onChangeText={val => updateSetting(maxKey, val)}
@@ -137,6 +154,42 @@ const SettingsScreen: React.FC = () => {
     </Typography>
   );
 
+  const renderLanguageOption = (language: AppSettings['language']) => {
+    const isSelected = settings.language === language;
+
+    return (
+      <TouchableOpacity
+        key={language}
+        onPress={() => updateLanguage(language)}
+        className={`flex-1 rounded-2xl border px-3 py-4 items-center justify-center ${
+          isSelected
+            ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-500'
+            : 'bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800'
+        }`}
+        activeOpacity={0.8}
+      >
+        <Typography
+          className={`font-outfit-bold ${
+            isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white'
+          }`}
+        >
+          {language}
+        </Typography>
+        <Typography
+          className={`mt-1 text-xs text-center font-outfit-medium ${
+            isSelected ? 'text-blue-500 dark:text-blue-300' : 'text-slate-500 dark:text-slate-400'
+          }`}
+        >
+          {t(languageLabelKeys[language])}
+        </Typography>
+      </TouchableOpacity>
+    );
+  };
+
+  const selectedNotificationSound =
+    notificationSounds.find(option => option.id === settings.notificationSound)?.name ??
+    t('settings.notificationSoundDefault');
+
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-slate-950" edges={['top', 'bottom']}>
       {/* Header */}
@@ -190,6 +243,9 @@ const SettingsScreen: React.FC = () => {
             <Typography className="mt-3 text-emerald-600 dark:text-emerald-400 font-outfit-medium text-sm">
               {t('settings.recommendedWater', { recommended: calculateRecommendedWater() })}
             </Typography>
+            <Typography className="mt-2 text-slate-500 dark:text-slate-400 font-outfit-medium text-sm">
+              {t('settings.waterGoalAutoHint')}
+            </Typography>
           </View>
 
           <Typography variant="caption" className="mb-2 font-outfit-semibold text-slate-500 dark:text-slate-400">
@@ -239,6 +295,12 @@ const SettingsScreen: React.FC = () => {
               </Typography>
             </View>
           ) : null}
+          <SettingRow
+             label={t('settings.notificationSound')}
+             subtitle={selectedNotificationSound}
+             onPress={() => setShowSoundPicker(true)}
+             type="link"
+          />
           <SettingRow 
              label={t('settings.weightReminder')}
              subtitle={t('settings.weightReminderSubtitle')}
@@ -282,12 +344,26 @@ const SettingsScreen: React.FC = () => {
         </Card>
 
         <Card className="mb-5 p-5">
+          {renderCardTitle(t('settings.languageTitle'))}
+          <Typography className="mb-4 font-outfit-medium text-slate-500 dark:text-slate-400">
+            {t('settings.languageSubtitle')}
+          </Typography>
+          <View className="flex-row gap-3">
+            {supportedLanguages.map(renderLanguageOption)}
+          </View>
+        </Card>
+
+        <Card className="mb-5 p-5">
           {renderCardTitle(t('settings.darkMode'))}
-          <SettingRow 
-             label={t('settings.darkMode')}
-             subtitle={t('settings.appearance')}
-             value={isDarkMode}
-             onValueChange={(value) => setColorScheme(value ? 'dark' : 'light')}
+          <SettingRow
+            label={t('settings.darkMode')}
+            subtitle={t('settings.appearance')}
+            value={settings.themeMode === 'dark'}
+            onValueChange={(value) => {
+              const nextTheme = value ? 'dark' : 'light';
+              setColorScheme(nextTheme);
+              updateThemeMode(nextTheme);
+            }}
           />
         </Card>
 
@@ -305,6 +381,73 @@ const SettingsScreen: React.FC = () => {
           <Typography variant="h3" className="text-white ml-2">{t('settings.save')}</Typography>
         </TouchableOpacity>
       </View>
+
+      <Modal visible={showSoundPicker} transparent animationType="slide" onRequestClose={() => setShowSoundPicker(false)}>
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity style={StyleSheet.absoluteFillObject} onPress={() => setShowSoundPicker(false)} />
+          <View className="rounded-t-3xl bg-white px-6 pb-8 pt-4 dark:bg-slate-950" style={styles.modalSheet}>
+            <View className="mb-5 h-1.5 w-12 self-center rounded-full bg-slate-200 dark:bg-slate-800" />
+            <View className="mb-5 flex-row items-center justify-between">
+              <View className="flex-1 pr-4">
+                <Typography variant="h3" className="font-outfit-bold text-slate-900 dark:text-white">
+                  {t('settings.notificationSoundPickerTitle')}
+                </Typography>
+                <Typography className="mt-1 font-outfit-medium text-slate-500 dark:text-slate-400">
+                  {t('settings.notificationSoundSubtitle')}
+                </Typography>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowSoundPicker(false)}
+                className="h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900"
+              >
+                <X size={18} color={isDarkMode ? '#94A3B8' : '#64748B'} />
+              </TouchableOpacity>
+            </View>
+
+            {isLoadingNotificationSounds ? (
+              <View className="items-center py-12">
+                <ActivityIndicator color={isDarkMode ? '#60A5FA' : '#3B82F6'} />
+                <Typography className="mt-4 font-outfit-medium text-slate-500 dark:text-slate-400">
+                  {t('settings.notificationSoundLoading')}
+                </Typography>
+              </View>
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.soundList}>
+                {notificationSounds.map((sound) => {
+                  const isSelected = settings.notificationSound === sound.id;
+
+                  return (
+                    <TouchableOpacity
+                      key={sound.id}
+                      onPress={async () => {
+                        await updateNotificationSound(sound.id);
+                        setShowSoundPicker(false);
+                      }}
+                      className={`mb-3 flex-row items-center justify-between rounded-2xl border px-4 py-4 ${
+                        isSelected
+                          ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950/30'
+                          : 'border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-900'
+                      }`}
+                      activeOpacity={0.8}
+                    >
+                      <Typography
+                        className={`flex-1 pr-4 font-outfit-semibold ${
+                          isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white'
+                        }`}
+                      >
+                        {sound.name}
+                      </Typography>
+                      {isSelected ? (
+                        <Check size={18} color={isDarkMode ? '#60A5FA' : '#2563EB'} />
+                      ) : null}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -315,5 +458,16 @@ const styles = StyleSheet.create({
   textInput: {
     includeFontPadding: false,
     textAlignVertical: 'center',
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(15, 23, 42, 0.45)',
+  },
+  modalSheet: {
+    maxHeight: '75%',
+  },
+  soundList: {
+    maxHeight: 420,
+  },
 });

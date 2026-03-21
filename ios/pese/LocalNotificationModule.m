@@ -4,6 +4,7 @@
 
 static NSString *const kPeseReminderPrefix = @"pese.reminder.";
 static NSString *const kStoredReminderIdentifiersKey = @"pese.storedReminderIdentifiers";
+static NSString *const kPendingNotificationUrlKey = @"pese.pendingNotificationUrl";
 
 @interface LocalNotificationModule : NSObject <RCTBridgeModule>
 @end
@@ -59,6 +60,7 @@ RCT_REMAP_METHOD(
       NSString *reminderId = item[@"id"];
       NSString *title = item[@"title"];
       NSString *body = item[@"body"];
+      NSString *sound = item[@"sound"];
       NSNumber *hour = item[@"hour"];
       NSNumber *minute = item[@"minute"];
 
@@ -77,7 +79,11 @@ RCT_REMAP_METHOD(
       UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
       content.title = title;
       content.body = body;
-      content.sound = [UNNotificationSound defaultSound];
+      if ([sound isKindOfClass:[NSString class]] && [sound isEqualToString:@"silent"]) {
+        content.sound = nil;
+      } else {
+        content.sound = [UNNotificationSound defaultSound];
+      }
 
       UNCalendarNotificationTrigger *trigger =
         [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:YES];
@@ -108,6 +114,27 @@ RCT_REMAP_METHOD(
       }];
     }
   }];
+}
+
+RCT_REMAP_METHOD(
+  consumePendingNotificationUrl,
+  consumePendingNotificationUrlWithResolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+)
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *url = [defaults stringForKey:kPendingNotificationUrlKey];
+  [defaults removeObjectForKey:kPendingNotificationUrlKey];
+  resolve(url);
+}
+
+RCT_REMAP_METHOD(
+  getAvailableSounds,
+  getAvailableSoundsWithResolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+)
+{
+  resolve(@[]);
 }
 
 RCT_REMAP_METHOD(

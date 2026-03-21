@@ -6,6 +6,7 @@ import { Typography } from '@/components/atoms/Typography';
 import { Card } from '@/components/molecules/Card';
 import { IconBox } from '@/components/atoms/IconBox';
 import { GraphicIcon } from '@/components/atoms/GraphicIcon';
+import { useTranslation } from 'react-i18next';
 import { HistoryRecord } from '../hooks/useHistory';
 
 interface HistoryCardProps {
@@ -64,6 +65,7 @@ const getStatusStyle = (status?: string): { bg: string; text: string } => {
 
 export const HistoryCard: React.FC<HistoryCardProps> = ({ record, isDarkMode, onDelete, onEdit }) => {
   const swipeableRef = useRef<Swipeable>(null);
+  const { i18n } = useTranslation();
   const { icon, color, bgColor } = getIcon(record.type, isDarkMode);
 
   const handleEdit = () => {
@@ -107,7 +109,7 @@ export const HistoryCard: React.FC<HistoryCardProps> = ({ record, isDarkMode, on
     );
   };
 
-  const formattedTime = new Date(record.date).toLocaleTimeString('pt-BR', { 
+  const formattedTime = new Date(record.date).toLocaleTimeString(i18n.language, {
     hour: '2-digit', minute: '2-digit', hour12: false 
   });
 
