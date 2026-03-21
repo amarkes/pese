@@ -4,10 +4,27 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
 
 ## [0.11.0] - 2026-03-21 12:47
-- feat(settings): add settings hub screen
-- feat(data-transfer): add CSV import/export and downloadable templates
-- feat(content): add help, policy, and new translations
-- feat(notifications): improve local reminder sound, icon, and deep-link routin
+### feat(settings): add settings hub screen
+- Replaced the old direct settings tab flow with a settings hub.
+- Added entry points for app settings, import/export, help, and policy.
+- Updated stack and tab navigation to support the new screens.
+
+### feat(data-transfer): add CSV import/export and downloadable templates
+- Added import flows for weight, glucose, and water spreadsheets.
+- Added export flows for weight, glucose, and water data.
+- Added downloadable CSV templates for weight, glucose, and water.
+- Added storage import helpers to persist imported records.
+- Added document picker dependency and iOS pod integration.
+### feat(content): add help, policy, and new translations
+- Added a help screen with usage guidance.
+- Added a policy screen describing local storage and file sharing behavior.
+- Added and updated translation strings in Portuguese, English, and Spanish.
+### feat(notifications): improve local reminder sound, icon, and deep-link routing
+- Added configurable notification sound support.
+- Added a dedicated Android notification icon instead of using the launcher icon.
+- Added deep-link based routing so tapping a weight, glucose, or water notification opens the correct registration screen.
+- Wired notification handling for both Android and iOS.
+- Added app deep-link configuration for both platforms.
 
 ## [0.10.2] - 2026-03-20 17:44
 - - feat: add notification warning for unavailable local notification module in settings
