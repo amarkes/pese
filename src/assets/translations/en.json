@@ -284,7 +284,21 @@
     "exportCsv": "Export CSV",
     "exportErrorTitle": "Error",
     "exportPdfError": "Could not export the PDF.",
-    "exportCsvError": "Could not export the CSV."
+    "exportCsvError": "Could not export the CSV.",
+    "chartTitle": "Period Chart",
+    "trendTitle": "Period Evolution",
+    "weightDeltaLabel": "Weight Change",
+    "glucoseTrendLabel": "Glucose Trend",
+    "waterDailyLabel": "Daily Water Average",
+    "variation": "Change",
+    "trend": "Trend",
+    "dailyAvg": "Avg/day",
+    "ofGoal": "of goal",
+    "gained": "Gained",
+    "lost": "Lost",
+    "stable": "Stable",
+    "rising": "Rising",
+    "falling": "Falling"
   },
   "help": {
     "title": "Help",

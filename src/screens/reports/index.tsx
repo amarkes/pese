@@ -12,6 +12,8 @@ import { DataInclusionSelector } from './components/DataInclusionSelector';
 import { ExportSummary } from './components/ExportSummary';
 import { ReportSummary } from './components/ReportSummary';
 import { ExportActions } from './components/ExportActions';
+import { TrendSummary } from './components/TrendSummary';
+import { TrendChart } from './components/TrendChart';
 import { DateRangeModal } from './components/DateRangeModal';
 
 type PeriodMode = 'last30' | 'thisMonth' | 'custom';
@@ -31,11 +33,25 @@ export const ReportsScreen = () => {
 
   const [dataIncluded, setDataIncluded] = useState({ weight: true, glucose: true, water: true });
 
+  const [rawData, setRawData] = useState<{
+    weights: Awaited<ReturnType<typeof WeightStorage.getRecords>>;
+    glucoses: Awaited<ReturnType<typeof GlucoseStorage.getRecords>>;
+    waters: Awaited<ReturnType<typeof WaterStorage.getRecords>>;
+  }>({ weights: [], glucoses: [], waters: [] });
+  const [chartRange, setChartRange] = useState<{ past: Date; now: Date }>(() => {
+    const now = new Date();
+    const past = new Date();
+    past.setDate(now.getDate() - 30);
+    return { past, now };
+  });
+
   const [stats, setStats] = useState({
     totalRecords: 0,
     weightAvg: 0,
     weightGoal: 0,
+    weightDelta: 0,
     glucoseAvg: 0,
+    glucoseDelta: 0,
     waterAvg: 0,
     waterGoal: 0,
     startDate: '',
@@ -77,16 +93,31 @@ export const ReportsScreen = () => {
       const waterSum = fWaters.reduce((a, b) => a + b.amount, 0);
       const waterAvg = waterSum / daySpan;
 
+      const sortedW = [...fWeights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const weightDelta = sortedW.length >= 2 ? sortedW[sortedW.length - 1].weight - sortedW[0].weight : 0;
+
+      const sortedG = [...fGlucoses].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const mid = Math.floor(sortedG.length / 2);
+      const firstHalf = sortedG.slice(0, mid);
+      const secondHalf = sortedG.slice(mid);
+      const firstAvg = firstHalf.length ? firstHalf.reduce((a, b) => a + b.glucose, 0) / firstHalf.length : 0;
+      const secondAvg = secondHalf.length ? secondHalf.reduce((a, b) => a + b.glucose, 0) / secondHalf.length : 0;
+      const glucoseDelta = sortedG.length >= 2 ? secondAvg - firstAvg : 0;
+
       setStats({
         totalRecords: fWeights.length + fGlucoses.length + fWaters.length,
         weightAvg,
         weightGoal: Number(settings.weightGoal) || 0,
+        weightDelta,
         glucoseAvg,
+        glucoseDelta,
         waterAvg,
         waterGoal: Number(settings.waterGoal) || 2000,
         startDate: fmt(past),
         endDate: fmt(now),
       });
+      setRawData({ weights: fWeights, glucoses: fGlucoses, waters: fWaters });
+      setChartRange({ past, now });
     } catch (e) {
       console.error(e);
     }
@@ -148,6 +179,15 @@ export const ReportsScreen = () => {
           totalRecords={stats.totalRecords}
         />
         <ReportSummary dataIncluded={dataIncluded} stats={stats} />
+        <TrendChart
+          weights={rawData.weights}
+          glucoses={rawData.glucoses}
+          waters={rawData.waters}
+          dataIncluded={dataIncluded}
+          dateRange={chartRange}
+          language={i18n.language}
+        />
+        <TrendSummary dataIncluded={dataIncluded} stats={stats} />
         <ExportActions stats={stats} dataIncluded={dataIncluded} />
       </ScrollView>
 
