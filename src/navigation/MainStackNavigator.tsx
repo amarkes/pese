@@ -4,6 +4,8 @@ import { TabNavigator } from './TabNavigator';
 import { RegisterWeightScreen } from '@/screens/weight';
 import { RegisterGlucoseScreen } from '@/screens/glucose';
 import { RegisterWaterScreen } from '@/screens/water/index';
+import { RegisterBloodPressureScreen } from '@/screens/blood-pressure';
+import { StatisticsScreen } from '@/screens/statistics';
 import SettingsScreen from '@/screens/settings';
 import DataTransferScreen from '@/screens/data-transfer';
 import HelpScreen from '@/screens/help';
@@ -29,6 +31,16 @@ export const MainStackNavigator = () => {
         name="RegisterWater" 
         component={RegisterWaterScreen}
         options={{ animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen
+        name="RegisterBloodPressure"
+        component={RegisterBloodPressureScreen}
+        options={{ animation: 'slide_from_bottom' }}
+      />
+      <Stack.Screen
+        name="Statistics"
+        component={StatisticsScreen}
+        options={{ animation: 'slide_from_right' }}
       />
       <Stack.Screen
         name="AppSettings"

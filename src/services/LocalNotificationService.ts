@@ -3,6 +3,7 @@ import { AppSettings, SettingsStorage } from './SettingsStorage';
 import { GlucoseStorage, MeasurementType } from './GlucoseStorage';
 import { WaterStorage } from './WaterStorage';
 import { WeightStorage } from './WeightStorage';
+import { BloodPressureStorage } from './BloodPressureStorage';
 
 export interface ReminderSpec {
   id: string;
@@ -25,7 +26,9 @@ export type NotificationValidationError =
   | 'glucose_post_meal_time'
   | 'glucose_random_time'
   | 'water_count'
-  | 'water_window';
+  | 'water_window'
+  | 'bp_morning_time'
+  | 'bp_night_time';
 
 interface NotificationTexts {
   weightTitle: string;
@@ -40,6 +43,10 @@ interface NotificationTexts {
   glucoseRandomBody: string;
   waterTitle: string;
   waterBody: string;
+  bpMorningTitle: string;
+  bpMorningBody: string;
+  bpNightTitle: string;
+  bpNightBody: string;
 }
 
 type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
@@ -167,10 +174,11 @@ const buildNotificationTexts = async (
   t: TranslateFn,
   locale: string
 ): Promise<NotificationTexts> => {
-  const [lastWeightRecord, latestGlucoseByType, todayWaterRecords] = await Promise.all([
+  const [lastWeightRecord, latestGlucoseByType, todayWaterRecords, lastBpRecord] = await Promise.all([
     WeightStorage.getLastRecord(),
     getLatestGlucoseByType(),
     WaterStorage.getRecordsByDate(new Date().toISOString()),
+    BloodPressureStorage.getLastRecord(),
   ]);
 
   const dailyGoalSetting = parseInt(settings.waterGoal, 10);
@@ -209,6 +217,20 @@ const buildNotificationTexts = async (
           goal: formatInteger(dailyGoal, locale),
         })
       : t('settings.waterReminderBodyGoalMet', { goal: formatInteger(dailyGoal, locale) }),
+    bpMorningTitle: t('settings.bpMorningReminderTitle'),
+    bpMorningBody: lastBpRecord
+      ? t('settings.bpMorningReminderBodyWithLast', {
+          systolic: formatInteger(lastBpRecord.systolic, locale),
+          diastolic: formatInteger(lastBpRecord.diastolic, locale),
+        })
+      : t('settings.bpMorningReminderBodyWithoutLast'),
+    bpNightTitle: t('settings.bpNightReminderTitle'),
+    bpNightBody: lastBpRecord
+      ? t('settings.bpNightReminderBodyWithLast', {
+          systolic: formatInteger(lastBpRecord.systolic, locale),
+          diastolic: formatInteger(lastBpRecord.diastolic, locale),
+        })
+      : t('settings.bpNightReminderBodyWithoutLast'),
   };
 };
 
@@ -250,6 +272,15 @@ export const LocalNotificationService = {
 
       if (!start || !end || toMinutes(end) <= toMinutes(start)) {
         errors.push('water_window');
+      }
+    }
+
+    if (settings.bpRemindersEnabled) {
+      if (!parseTime(settings.bpMorningTime)) {
+        errors.push('bp_morning_time');
+      }
+      if (!parseTime(settings.bpNightTime)) {
+        errors.push('bp_night_time');
       }
     }
 
@@ -315,6 +346,27 @@ export const LocalNotificationService = {
           });
         });
       }
+    }
+
+    if (settings.bpRemindersEnabled) {
+      const bpReminders: Array<[string, string, string, string]> = [
+        ['bp-morning', settings.bpMorningTime, texts.bpMorningTitle, texts.bpMorningBody],
+        ['bp-night', settings.bpNightTime, texts.bpNightTitle, texts.bpNightBody],
+      ];
+
+      bpReminders.forEach(([id, rawTime, title, body]) => {
+        const time = parseTime(rawTime);
+        if (time) {
+          reminders.push({
+            id,
+            title,
+            body,
+            hour: time.hour,
+            minute: time.minute,
+            sound: settings.notificationSound,
+          });
+        }
+      });
     }
 
     return reminders;

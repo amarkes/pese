@@ -28,6 +28,8 @@ export const useSettings = () => {
     'glucoseRandomTime',
     'waterReminderStartTime',
     'waterReminderEndTime',
+    'bpMorningTime',
+    'bpNightTime',
   ];
 
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
@@ -193,6 +195,10 @@ export const useSettings = () => {
             return t('settings.invalidWaterCount');
           case 'water_window':
             return t('settings.invalidWaterWindow');
+          case 'bp_morning_time':
+            return t('settings.invalidBpMorningTime');
+          case 'bp_night_time':
+            return t('settings.invalidBpNightTime');
         }
       });
 
@@ -216,6 +222,10 @@ export const useSettings = () => {
       glucoseRandomBody: t('settings.glucoseRandomReminderBodyWithoutLast'),
       waterTitle: t('settings.waterReminderTitle'),
       waterBody: t('settings.waterReminderBodyWithRemaining', { remaining: '0', goal: settings.waterGoal || '0' }),
+      bpMorningTitle: t('settings.bpMorningReminderTitle'),
+      bpMorningBody: t('settings.bpMorningReminderBodyWithoutLast'),
+      bpNightTitle: t('settings.bpNightReminderTitle'),
+      bpNightBody: t('settings.bpNightReminderBodyWithoutLast'),
     });
 
     if (reminders.length > 0 && !LocalNotificationService.isModuleAvailable()) {

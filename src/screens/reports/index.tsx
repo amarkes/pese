@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Typography } from '@/components/atoms/Typography';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { TrendingUp, ChevronRight } from 'lucide-react-native';
 import { WeightStorage } from '@/services/WeightStorage';
 import { GlucoseStorage } from '@/services/GlucoseStorage';
 import { WaterStorage } from '@/services/WaterStorage';
@@ -148,6 +150,8 @@ export const ReportsScreen = () => {
   // Map periodMode to a number value that PeriodSelector uses for highlight
   const periodValue = periodMode === 'last30' ? 30 : periodMode === 'thisMonth' ? new Date().getDate() : -1;
 
+  const navigation = useNavigation<any>();
+
   const customLabel =
     periodMode === 'custom' && customStart && customEnd
       ? `${fmt(customStart)} – ${fmt(customEnd)}`
@@ -155,10 +159,20 @@ export const ReportsScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50 dark:bg-slate-950">
-      <View className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+      <View className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex-row items-center justify-between">
         <Typography className="text-2xl font-outfit-bold text-slate-900 dark:text-white">
           {t('reports.title')}
         </Typography>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Statistics')}
+          className="flex-row items-center gap-1 bg-indigo-50 dark:bg-indigo-950 px-3 py-1.5 rounded-xl"
+        >
+          <TrendingUp size={14} color="#6366F1" />
+          <Typography className="text-xs font-outfit-bold text-indigo-600 dark:text-indigo-400">
+            {t('tabs.statistics')}
+          </Typography>
+          <ChevronRight size={12} color="#6366F1" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView className="flex-1 p-5" showsVerticalScrollIndicator={false}>

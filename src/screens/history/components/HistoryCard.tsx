@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { View, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { Pencil, Trash2, Scale, Droplet, Activity, Moon } from 'lucide-react-native';
+import { Pencil, Trash2, Scale, Droplet, Activity, Heart } from 'lucide-react-native';
 import { Typography } from '@/components/atoms/Typography';
 import { Card } from '@/components/molecules/Card';
 import { IconBox } from '@/components/atoms/IconBox';
@@ -21,7 +21,7 @@ const getIcon = (type: string, isDarkMode: boolean) => {
     case 'weight': return { icon: Scale, color: isDarkMode ? "#60A5FA" : "#007AFF", bgColor: isDarkMode ? 'bg-blue-950' : 'bg-blue-50' };
     case 'water': return { icon: Droplet, color: isDarkMode ? "#60A5FA" : "#3B82F6", bgColor: isDarkMode ? 'bg-blue-950' : 'bg-blue-50' };
     case 'glucose': return { icon: Activity, color: isDarkMode ? "#FB923C" : "#F97316", bgColor: isDarkMode ? 'bg-orange-950' : 'bg-orange-50' };
-    case 'sleep': return { icon: Moon, color: isDarkMode ? "#A5B4FC" : "#818CF8", bgColor: isDarkMode ? 'bg-indigo-950' : 'bg-indigo-50' };
+    case 'bloodPressure': return { icon: Heart, color: isDarkMode ? "#F87171" : "#EF4444", bgColor: isDarkMode ? 'bg-red-950' : 'bg-red-50' };
     default: return { icon: Activity, color: isDarkMode ? "#94A3B8" : "#6C6C70", bgColor: isDarkMode ? 'bg-slate-900' : 'bg-slate-50' };
   }
 };

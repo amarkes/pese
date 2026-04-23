@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { WeightStorage } from '@/services/WeightStorage';
 import { GlucoseStorage } from '@/services/GlucoseStorage';
 import { WaterStorage } from '@/services/WaterStorage';
+import { BloodPressureStorage, classifyBP } from '@/services/BloodPressureStorage';
 
-export type HistoryItemType = 'weight' | 'glucose' | 'water' | 'sleep';
+export type HistoryItemType = 'weight' | 'glucose' | 'water' | 'bloodPressure' | 'sleep';
 
 export interface HistoryRecord {
   id: string;
@@ -21,6 +22,8 @@ export interface HistoryRecord {
   originalId: string;
   measurementType?: string;
   observations?: string;
+  systolic?: number;
+  diastolic?: number;
 }
 
 export type PeriodType = 'day' | 'week' | 'month' | 'custom';
@@ -96,7 +99,32 @@ export const useHistory = () => {
         subtitle: t('history.waterSub'),
       }));
 
-      setRecords([...weightRecords, ...glucoseRecords, ...waterRecords].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      const bpRecords = await BloodPressureStorage.getRecords();
+      const CAT_LABELS: Record<string, string> = {
+        low: t('bloodPressure.catLow'),
+        normal: t('bloodPressure.catNormal'),
+        elevated: t('bloodPressure.catElevated'),
+        hyp1: t('bloodPressure.catHyp1'),
+        hyp2: t('bloodPressure.catHyp2'),
+        crisis: t('bloodPressure.catCrisis'),
+      };
+      const bpHistoryRecords: HistoryRecord[] = bpRecords.map(bp => ({
+        id: `bp-${bp.id}`,
+        originalId: bp.id,
+        type: 'bloodPressure',
+        value: bp.systolic,
+        valueDisplay: `${bp.systolic}/${bp.diastolic}`,
+        unit: 'mmHg',
+        date: bp.date,
+        subtitle: t('history.bloodPressureSub'),
+        status: CAT_LABELS[classifyBP(bp.systolic, bp.diastolic)],
+        systolic: bp.systolic,
+        diastolic: bp.diastolic,
+      }));
+
+      setRecords([...weightRecords, ...glucoseRecords, ...waterRecords, ...bpHistoryRecords].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      ));
     } catch (error) {
       console.error('Error loading history:', error);
     } finally {
@@ -119,36 +147,48 @@ export const useHistory = () => {
     const today = new Date();
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
+    const currentYear = today.getFullYear();
+
+    const isSameDay = (a: Date, b: Date) =>
+      a.getDate() === b.getDate() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear();
 
     filteredRecords.forEach(record => {
       const d = new Date(record.date);
       let groupKey = '';
-      
-      const isToday = d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-      const isYesterday = d.getDate() === yesterday.getDate() && d.getMonth() === yesterday.getMonth() && d.getFullYear() === yesterday.getFullYear();
-      const fullDate = d.toLocaleDateString(i18n.language, {
-        day: '2-digit',
-        month: 'long',
-      }).toUpperCase();
 
-      if (isToday) {
-        groupKey = `${t('history.today')}, ${fullDate}`;
-      } else if (isYesterday) {
-        groupKey = `${t('history.yesterday')}, ${fullDate}`;
+      const dayMonth = d
+        .toLocaleDateString(i18n.language, { day: '2-digit', month: 'long' })
+        .toUpperCase();
+
+      if (isSameDay(d, today)) {
+        groupKey = `${t('history.today')}, ${dayMonth}`;
+      } else if (isSameDay(d, yesterday)) {
+        groupKey = `${t('history.yesterday')}, ${dayMonth}`;
+      } else if (d.getFullYear() === currentYear) {
+        // Registros mais antigos mas do ano corrente → agrupar por dia
+        groupKey = dayMonth;
       } else {
-        groupKey = d.toLocaleDateString(i18n.language, {
-          month: 'long',
-          year: 'numeric',
-        }).toUpperCase();
+        // Ano diferente → inclui ano para evitar colisão entre anos
+        groupKey = d
+          .toLocaleDateString(i18n.language, {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          })
+          .toUpperCase();
       }
 
       if (!groups[groupKey]) groups[groupKey] = [];
       groups[groupKey].push(record);
     });
 
+    // A ordem de inserção das chaves já reflete o sort desc de filteredRecords,
+    // então Object.keys devolve os grupos do mais recente para o mais antigo.
     return Object.keys(groups).map(key => ({
       title: key,
-      data: groups[key]
+      data: groups[key],
     }));
   }, [filteredRecords, i18n.language, t]);
 
@@ -159,6 +199,8 @@ export const useHistory = () => {
       await GlucoseStorage.deleteRecord(record.originalId);
     } else if (record.type === 'water') {
       await WaterStorage.deleteRecord(record.originalId);
+    } else if (record.type === 'bloodPressure') {
+      await BloodPressureStorage.deleteRecord(record.originalId);
     }
     setItemToDelete(null);
     loadData();

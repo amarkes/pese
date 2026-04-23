@@ -328,7 +328,7 @@ const SettingsScreen: React.FC = () => {
             </View>
           ) : null}
 
-          <SettingRow 
+          <SettingRow
              label={t('settings.waterReminders')}
              subtitle={t('settings.waterRemindersSubtitle')}
              value={settings.waterRemindersEnabled}
@@ -339,6 +339,19 @@ const SettingsScreen: React.FC = () => {
               {renderNotificationNumberInput('timesPerDay', 'waterReminderCount', '7')}
               {renderTimeInput('startTime', 'waterReminderStartTime', '08:00')}
               {renderTimeInput('endTime', 'waterReminderEndTime', '22:00')}
+            </View>
+          ) : null}
+
+          <SettingRow
+             label={t('settings.bpReminders')}
+             subtitle={t('settings.bpRemindersSubtitle')}
+             value={settings.bpRemindersEnabled}
+             onValueChange={(value) => updateBooleanSetting('bpRemindersEnabled', value)}
+          />
+          {settings.bpRemindersEnabled ? (
+            <View className="mb-0 mt-4">
+              {renderTimeInput('bpMorningTime', 'bpMorningTime', '08:00')}
+              {renderTimeInput('bpNightTime', 'bpNightTime', '20:00')}
             </View>
           ) : null}
         </Card>

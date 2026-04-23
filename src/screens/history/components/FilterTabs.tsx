@@ -12,7 +12,7 @@ interface FilterTabsProps {
 export const FilterTabs: React.FC<FilterTabsProps> = ({ activeFilter, setActiveFilter }) => {
   const { t } = useTranslation();
   
-  const filters: (HistoryItemType | 'all')[] = ['all', 'weight', 'glucose', 'water', 'sleep'];
+  const filters: (HistoryItemType | 'all')[] = ['all', 'weight', 'glucose', 'water', 'bloodPressure'];
 
   return (
     <View className="border-b border-slate-100 dark:border-slate-800">

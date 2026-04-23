@@ -59,7 +59,15 @@ export const HistoryScreen: React.FC = () => {
         glucose: record.value.toString(),
         measurementType: record.measurementType,
         observations: record.observations,
-        date: record.date
+        date: record.date,
+      });
+    } else if (record.type === 'bloodPressure') {
+      navigation.navigate('RegisterBloodPressure', {
+        editMode: true,
+        recordId: record.originalId,
+        systolic: record.systolic?.toString() ?? '',
+        diastolic: record.diastolic?.toString() ?? '',
+        date: record.date,
       });
     }
   };

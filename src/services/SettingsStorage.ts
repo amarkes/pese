@@ -18,6 +18,9 @@ export interface AppSettings {
   waterReminderCount: string;
   waterReminderStartTime: string;
   waterReminderEndTime: string;
+  bpRemindersEnabled: boolean;
+  bpMorningTime: string;
+  bpNightTime: string;
   glucoseLowMin: string;
   glucoseLowMax: string;
   glucoseNormalMin: string;
@@ -48,6 +51,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   waterReminderCount: '7',
   waterReminderStartTime: '08:00',
   waterReminderEndTime: '22:00',
+  bpRemindersEnabled: false,
+  bpMorningTime: '08:00',
+  bpNightTime: '20:00',
   glucoseLowMin: '36',
   glucoseLowMax: '80',
   glucoseNormalMin: '81',

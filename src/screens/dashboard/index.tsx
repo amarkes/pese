@@ -7,6 +7,7 @@ import { WeightRecord, WeightStorage } from '@/services/WeightStorage';
 import { GlucoseStorage } from '@/services/GlucoseStorage';
 import { SettingsStorage } from '@/services/SettingsStorage';
 import { WaterStorage } from '@/services/WaterStorage';
+import { BloodPressureStorage, classifyBP } from '@/services/BloodPressureStorage';
 
 import { QuickActionsSection } from './components/QuickActionsSection';
 import { SummarySection } from './components/SummarySection';
@@ -46,6 +47,9 @@ const DashboardScreen: React.FC = () => {
     waterConsumed: 0,
     waterGoal: 2500,
     waterProgress: 0,
+    bpSystolic: null as number | null,
+    bpDiastolic: null as number | null,
+    bpCategory: null as string | null,
   });
   const [trend, setTrend] = useState({
     labels: [] as string[],
@@ -63,11 +67,12 @@ const DashboardScreen: React.FC = () => {
     }
 
     try {
-      const [weightRecords, glucoseRecords, waterRecords, settings] = await Promise.all([
+      const [weightRecords, glucoseRecords, waterRecords, settings, lastBP] = await Promise.all([
         WeightStorage.getRecords(),
         GlucoseStorage.getRecords(),
         WaterStorage.getRecords(),
         SettingsStorage.getSettings(),
+        BloodPressureStorage.getLastRecord(),
       ]);
 
       const sortedWeights = sortByDateDesc(weightRecords);
@@ -95,6 +100,9 @@ const DashboardScreen: React.FC = () => {
         waterConsumed: todayWater,
         waterGoal,
         waterProgress: waterGoal > 0 ? Math.min(todayWater / waterGoal, 1) : 0,
+        bpSystolic: lastBP?.systolic ?? null,
+        bpDiastolic: lastBP?.diastolic ?? null,
+        bpCategory: lastBP ? classifyBP(lastBP.systolic, lastBP.diastolic) : null,
       });
 
       const dayLabels = t('dashboard.days', { returnObjects: true }) as string[];
@@ -174,6 +182,9 @@ const DashboardScreen: React.FC = () => {
           waterConsumed={summary.waterConsumed}
           waterGoal={summary.waterGoal}
           waterProgress={summary.waterProgress}
+          bpSystolic={summary.bpSystolic}
+          bpDiastolic={summary.bpDiastolic}
+          bpCategory={summary.bpCategory}
         />
         <TrendSection
           labels={trend.labels}
